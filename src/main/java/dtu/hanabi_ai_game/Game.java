@@ -47,20 +47,12 @@ public class Game
 		int turn = 0;
 		while(true)
 		{
+			if (finished == 5 || board.getLife() == 0 || finalRound == turn)
+			{
+				System.out.println("Game is now over.. We should figure out a way to calculate score /s");
+				break;
+			}
 			takeTurn(turn);
-			if (board.getLife() == 0)
-			{
-				System.out.println("Oh no, we lost!");
-				Log.important("Gameover!");
-				break;
-			}
-			if (finished == 5)
-			{
-				System.out.println("WOW WE WON");
-				Log.important("VICTORY!");
-				break;
-			}
-
 			turn = (turn+1 == playerCount) ? 0 : turn+1;
 		}
 	}

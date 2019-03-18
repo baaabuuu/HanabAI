@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Used to handle the statespace for a board.
+ * @author s164166
+ *
+ */
 public class Board
 {
 	private ArrayList<Card> deck;
@@ -17,6 +22,12 @@ public class Board
 	private int[] cardNumbers;
 	private SuitEnum[] suits;
 	
+	/**
+	 * Copies the board and create a copy of it.
+	 * This is a deep copy method!
+	 * @return
+	 * @author s164166
+	 */
 	@SuppressWarnings("unchecked")
 	public Board copyState()
 	{
@@ -54,31 +65,60 @@ public class Board
 		
 	}
 	
+	
+	/**
+	 * Returns the current amount of lives left
+	 * @return
+	 * @author s164166
+	 */
 	public int getLife()
 	{
 		return life;
 	}
 	
+	/**
+	 * Adds a clue token
+	 * @author s164166
+	 */
     public void addClueToken()
     {
     	tokens++;
     }
     
+    /**
+     * Removes a clue token.
+     * @author s164166
+     */
     public void removeClueToken()
     {
     	tokens--;
     }
     
+    /**
+     * Gets the amount of clues token
+     * @author s164166
+     * @return the amount of clue tokens left
+     */
     public int getClueTokens()
     {
     	return tokens;
     }
 	
+    /**
+     * Returns the hand of the player.
+     * @author s164166
+     * @param playerNumber
+     * @return
+     */
 	public ArrayList<Card> getPlayerHand(int playerNumber)
 	{
 		return playerHand[playerNumber];
 	}
 	
+	/**
+	 * Removes a life
+	 * @author s164166
+	 */
 	public void removeLife()
 	{
 		life--;
@@ -87,6 +127,7 @@ public class Board
     /**
      * PlayerNumber draws the topcard of the stack.
      * @param playerNumber
+     * @author s164166
      */
     public void drawCard(int playerNumber)
     {
@@ -97,6 +138,7 @@ public class Board
      * Adds a card to the firework stack, with the stack ID.<br><b>WHITE = 0<br>RED = 1<br>BLUE = 2<br>YELLOW = 3<br>GREEN = 4
      * @param card - Card object being played
      * @param stack, the stack its added to
+     * @author s164166
      */
     public void playCard(Card card, int stack)
     {
@@ -105,7 +147,8 @@ public class Board
     
     /**
      * Gets the amount of cards left in the deck
-     * @return
+     * @return the amm of cards left.
+     * @author s164166
      */
     public int getDeckSize()
     {
@@ -118,6 +161,7 @@ public class Board
      * <br><b>WHITE = 0<br>RED = 1<br>BLUE = 2<br>YELLOW = 3<br>GREEN = 4
      * @param stack
      * @return value of the highest card in that stack.
+     * @author s164166
      */
     public int getTopCard(int stack)
     {
@@ -128,6 +172,7 @@ public class Board
     /**
      * Puts a card in the discard pile.
      * @param card
+     * @author s164166
      */
     public void discardCard(Card card)
     {
@@ -139,6 +184,7 @@ public class Board
 	 * Creates a new board with the following playerCount.
 	 * It throws an unchecked due to how java handles declaration of arrayList array.
 	 * @param playerCount
+	 * @author s164166
 	 */
     @SuppressWarnings("unchecked")
 	public void createNewBoard(int playerCount)
