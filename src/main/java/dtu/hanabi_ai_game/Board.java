@@ -79,6 +79,11 @@ public class Board
 		return playerHand[playerNumber];
 	}
 	
+	public void removeLife()
+	{
+		life--;
+	}
+	
     /**
      * PlayerNumber draws the topcard of the stack.
      * @param playerNumber
@@ -139,6 +144,7 @@ public class Board
 	public void createNewBoard(int playerCount)
     {
     	tokens = 6;
+    	life = 3;
     	cardNumbers = new int[5];
     	cardNumbers[0]	=	3;
     	cardNumbers[1]	=	2;

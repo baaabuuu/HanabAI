@@ -17,6 +17,16 @@ public class Card
 		return card;
 	}
 	
+	public void revealSuit()
+	{
+		suitRevealed = true;
+	}
+	
+	public void revealValue()
+	{
+		valueRevealed = true;
+	}
+	
 	public Card(SuitEnum suit, int value)
 	{
 		this.suit = suit;
