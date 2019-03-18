@@ -1,4 +1,5 @@
-package dtu.hanabi_ai_board;
+package dtu.hanabi_ai_game;
+
 
 public class Card
 {
@@ -27,7 +28,7 @@ public class Card
 		return suitRevealed;
 	}
 	
-	public boolean valueRevealed()
+	public boolean isValueRevealed()
 	{
 		return valueRevealed;
 	}
@@ -37,6 +38,7 @@ public class Card
 	{
 		return suit;
 	}
+	
 	public int getCardValue()
 	{
 		return cardValue;
@@ -45,9 +47,43 @@ public class Card
 	public String getStringRepresentation()
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append(suit.getColorCode());
-		sb.append(cardValue);
-		sb.append( "\u001B[0m");
+		if (isSuitRevealed())
+		{
+			sb.append(suit.getColorCode() + "\u001B[0m");
+
+		}
+		else
+		{
+			sb.append("(" + suit.getColorCode() + "\u001B[0m)");
+			
+		}
+		
+		if (isValueRevealed())
+		{
+			sb.append(cardValue);
+		}
+		else
+		{
+			sb.append("(" + cardValue + ")");
+		}
+		return sb.toString();
+	}
+	
+	public String getStringDuringTurn()
+	{
+		StringBuilder sb = new StringBuilder();
+		if (isSuitRevealed())
+		{
+			sb.append(suit.getColorCode() + "\u001B[0m");
+		}
+		if (isValueRevealed())
+		{
+			sb.append(cardValue);
+		}
+		if (sb.length() == 0)
+		{
+			sb.append("?");
+		}
 		return sb.toString();
 	}
 }

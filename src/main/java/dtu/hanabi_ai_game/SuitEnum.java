@@ -1,4 +1,4 @@
-package dtu.hanabi_ai_board;
+package dtu.hanabi_ai_game;
 
 public enum SuitEnum {
 	WHITE("\u001B[37mW", 0),

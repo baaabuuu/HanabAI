@@ -1,4 +1,4 @@
-package dtu.hanabi_ai_board;
+package dtu.hanabi_ai_game;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +74,7 @@ public class Board
     	return tokens;
     }
 	
-	public List<Card> getPlayerHand(int playerNumber)
+	public ArrayList<Card> getPlayerHand(int playerNumber)
 	{
 		return playerHand[playerNumber];
 	}
@@ -99,10 +99,20 @@ public class Board
     }
     
     /**
+     * Gets the amount of cards left in the deck
+     * @return
+     */
+    public int getDeckSize()
+    {
+		return deck.size();
+    	
+    }
+    
+    /**
      * Returns the card value of the card with the highest value in the stack with the stack ID.
      * <br><b>WHITE = 0<br>RED = 1<br>BLUE = 2<br>YELLOW = 3<br>GREEN = 4
      * @param stack
-     * @return
+     * @return value of the highest card in that stack.
      */
     public int getTopCard(int stack)
     {
@@ -121,12 +131,12 @@ public class Board
     
 
 	/**
-	 * Creates a new game with the following playerCount.
+	 * Creates a new board with the following playerCount.
 	 * It throws an unchecked due to how java handles declaration of arrayList array.
 	 * @param playerCount
 	 */
     @SuppressWarnings("unchecked")
-	public void createNewGame(int playerCount)
+	public void createNewBoard(int playerCount)
     {
     	tokens = 6;
     	cardNumbers = new int[5];
