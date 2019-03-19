@@ -10,7 +10,7 @@ Step 2:
 Make a new instace of an AI object using your new Strategy  
   
 Example  
-`AI mycoolai = new AI(MegaCoolStrategy);`
+`AI mycoolai = new AI(MegaCoolStrategy);`  
 To use:  
 
 `mycoolai.play()`
