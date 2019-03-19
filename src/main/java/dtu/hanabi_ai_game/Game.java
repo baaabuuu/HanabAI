@@ -67,7 +67,7 @@ public class Game
 			System.out.println("Player "  + (turn+1) + " its your turn!");
 			System.out.println("Revealing information specific to that player in..");
 			timer(durationBetweenTurns);
-			
+			getStackPiles();
 			ArrayList<Card>[] hands = getPlayerHands();
 			displayPlayerhands(hands, turn);
 			while(true)
@@ -115,7 +115,7 @@ public class Game
 		if (symbol == 'D' || symbol == 'd')
 		{
 			int value = Character.getNumericValue(action.charAt(1));
-			if (value > 0 && value <= board.getPlayerHand(turn).size())
+			if (value > 0 && value <= board.getPlayerHand(turn).size() && board.getClueTokens() < 8)
 			{
 				Card card = board.getPlayerHand(turn).remove(value - 1);
 				board.discardCard(card);
@@ -208,7 +208,8 @@ public class Game
 			{
 				Card card = board.getPlayerHand(turn).remove(cardBeingPlayed - 1);
 				int cardSuite = card.getCardSuit().getID();
-				if (board.getTopCard(cardSuite) < card.getCardValue())
+				Log.log("Top of the stack is: " + board.getTopCard(cardSuite));
+				if (board.getTopCard(cardSuite)+1 ==  card.getCardValue())
 				{
 					board.playCard(card, cardSuite);
 					if (card.getCardValue() == 5 && board.getClueTokens() < 8)
@@ -242,6 +243,12 @@ public class Game
 		}
 		return false;
 	
+	}
+	
+	public void getStackPiles()
+	{
+		System.out.println("Top of each firework stack is:");
+		System.out.println("W"+board.getTopCard(0) + " R"+board.getTopCard(1) + " B"+board.getTopCard(2) + " Y"+board.getTopCard(3) + " G"+board.getTopCard(4));
 	}
 	
 	
