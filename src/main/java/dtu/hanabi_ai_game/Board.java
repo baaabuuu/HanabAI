@@ -15,12 +15,23 @@ public class Board
 	private ArrayList<Card> discardPile;
 	private ArrayList<Card>[] playerHand;
 	private int[] fireworkStacks;
+	private int score;
 
 	private int tokens;
 	private int life;
 
 	private int[] cardNumbers;
 	private SuitEnum[] suits;
+	
+	public void addPoint()
+	{
+		score++;
+	}
+	
+	public int getScore()
+	{
+		return score;
+	}
 	
 	/**
 	 * Copies the board and create a copy of it.
@@ -35,6 +46,7 @@ public class Board
 		board.deck = new ArrayList<Card>(deck);
 		board.discardPile = new ArrayList<Card>(discardPile);
 		board.playerHand = new ArrayList[playerHand.length];
+		board.score = score;
 		for (int i = 0; i < playerHand.length; i++)
 		{
 			board.playerHand[i] = new ArrayList<Card>(playerHand[i].size());
@@ -210,7 +222,7 @@ public class Board
     	fireworkStacks = new int[suits.length];
     	for (int a = 0; a < suits.length; a++)
     	{
-    		fireworkStacks[a] = 1;
+    		fireworkStacks[a] = 0;
     		for (int i = 0; i < cardNumbers.length; i++)
     		{
     			for (int j = 0; j < cardNumbers[i]; j++)
