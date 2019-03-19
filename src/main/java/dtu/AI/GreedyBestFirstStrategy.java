@@ -16,6 +16,6 @@ public class GreedyBestFirstStrategy implements Strategy {
 	}
 	
 	private void andSearch(){};
-	private void orSearch(){};
+	private void orSearch(){}; 
 
 }

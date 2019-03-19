@@ -9,7 +9,7 @@ public enum GameAction {
 	private GameAction(String s) {
 		this.shorthand = s;
 	}
-	public String export() {return this.shorthand;}
+ 	public String export() {return this.shorthand;}
 
 
 }
