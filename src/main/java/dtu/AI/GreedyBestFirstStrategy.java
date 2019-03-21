@@ -151,9 +151,15 @@ public class GreedyBestFirstStrategy implements Strategy {
 				}
 				if (guessSuit != -1)
 				{
+					Log.important("Predicted the remaining cards suits" );
+
 					for (Card iteratingCard : attempt)
 					{
 						iteratingCard.revealSuit();
+						if (iteratingCard.isValueRevealed())
+						{
+							potentialCards.remove(iteratingCard);
+						}
 					}
 					guessedSuite = true;
 					guess = true;
@@ -178,9 +184,14 @@ public class GreedyBestFirstStrategy implements Strategy {
 				if (guessNumber != 0)
 				{
 					guessedValues = true;
+					Log.important("Predicted the remaining cards values" );
 					for (Card iteratingCard : attempt)
 					{
 						iteratingCard.revealValue();
+						if (iteratingCard.isSuitRevealed())
+						{
+							potentialCards.remove(iteratingCard);
+						}
 					}
 					guess = true;
 				}
@@ -202,11 +213,25 @@ public class GreedyBestFirstStrategy implements Strategy {
 	public void generateMoves(MoveWrapper wrapper, int currDepth, int maxDepth, int currPlayer)
 	{
 		Board board = wrapper.getBoard();
-		ArrayList<ArrayList<Card>> playerHands = new ArrayList<ArrayList<Card>>();
-		addPlayerHands(playerHands, board);
+		ArrayList<ArrayList<Card>> playerHandsOriginal = new ArrayList<ArrayList<Card>>();
+		addPlayerHands(playerHandsOriginal, board);
 		int scorePool[] = board.getFireworkStacks();
 		HashSet<Action> possibleActions = new HashSet<Action>();
-
+		//Replace the players predicted hand with X
+		ArrayList<ArrayList<Card>> playerHands = new ArrayList<ArrayList<Card>>();
+		for (int i = 0; i < playerHands.size(); i++)
+		{
+			if (i == currPlayer)
+			{
+				predictCards(playerHandsOriginal.get(i), playerHandsOriginal, currPlayer);
+			}
+			else
+			{
+				playerHands.add(playerHandsOriginal.get(i));
+			}
+		}
+		
+		
 		for(int i = 0; i < playerCount; i++)
 		{
 			if (i != currPlayer )
