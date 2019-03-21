@@ -199,6 +199,11 @@ public class Board
     	return fireworkStacks[stack];
     }
     
+    public int[] getFireworkStacks()
+    {
+    	return fireworkStacks;
+    }
+    
     
     /**
      * Puts a card in the discard pile.
@@ -207,7 +212,7 @@ public class Board
      */
     public void discardCard(Card card)
     {
-    	discardMatrix[card.getCardSuit().getID()][card.getCardValue()]++;
+    	discardMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
     }
     
 
