@@ -2,7 +2,6 @@ package dtu.hanabi_ai_game;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Used to handle the statespace for a board.
@@ -12,7 +11,7 @@ import java.util.List;
 public class Board
 {
 	private ArrayList<Card> deck;
-	private ArrayList<Card> discardPile;
+	private int[][] discardMatrix = new int[5][5];
 	private ArrayList<Card>[] playerHand;
 	private int[] fireworkStacks;
 	private int score;
@@ -44,9 +43,17 @@ public class Board
 	{
 		Board board = new Board();
 		board.deck = new ArrayList<Card>(deck);
-		board.discardPile = new ArrayList<Card>(discardPile);
+		board.discardMatrix = new int[5][5];
+		
 		board.playerHand = new ArrayList[playerHand.length];
 		board.score = score;
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 5; j++)
+			{
+				board.discardMatrix[i][j] = discardMatrix[i][j];
+			}
+		}
 		for (int i = 0; i < playerHand.length; i++)
 		{
 			board.playerHand[i] = new ArrayList<Card>(playerHand[i].size());
@@ -75,6 +82,18 @@ public class Board
 		}
 		return board;
 		
+	}
+	
+	/**
+	 * Discard Matric constraints
+	 * <br>First is suit</br>
+	 * <br>Second is value</br>
+	 * @author s164166
+	 * @return
+	 */
+	public int[][] getDiscardMatrix()
+	{
+		return discardMatrix;
 	}
 	
 	
@@ -188,7 +207,7 @@ public class Board
      */
     public void discardCard(Card card)
     {
-    	discardPile.add(card);
+    	discardMatrix[card.getCardSuit().getID()][card.getCardValue()]++;
     }
     
 
@@ -218,7 +237,8 @@ public class Board
     	suits[4]	=	SuitEnum.GREEN;
     	
     	deck = new ArrayList<Card>();
-    	discardPile = new ArrayList<Card>();
+    	discardMatrix = new int[5][5];
+
     	fireworkStacks = new int[suits.length];
     	for (int a = 0; a < suits.length; a++)
     	{
