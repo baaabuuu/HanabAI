@@ -11,7 +11,8 @@ import java.util.Collections;
 public class Board
 {
 	private ArrayList<Card> deck;
-	private int[][] discardMatrix = new int[5][5];
+	private ArrayList<Card> playedCardsPile;
+	private int[][] playedCardsMatrix = new int[5][5];
 	private ArrayList<Card>[] playerHand;
 	private int[] fireworkStacks;
 	private int score;
@@ -43,15 +44,19 @@ public class Board
 	{
 		Board board = new Board();
 		board.deck = new ArrayList<Card>(deck);
-		board.discardMatrix = new int[5][5];
-		
+		board.playedCardsMatrix = new int[5][5];
+		board.playedCardsPile = new ArrayList<Card>();
+		for (Card card : playedCardsPile)
+		{
+			playedCardsPile.add(card.copyCard());
+		}
 		board.playerHand = new ArrayList[playerHand.length];
 		board.score = score;
 		for (int i = 0; i < 5; i++)
 		{
 			for (int j = 0; j < 5; j++)
 			{
-				board.discardMatrix[i][j] = discardMatrix[i][j];
+				board.playedCardsMatrix[i][j] = playedCardsMatrix[i][j];
 			}
 		}
 		for (int i = 0; i < playerHand.length; i++)
@@ -93,7 +98,7 @@ public class Board
 	 */
 	public int[][] getDiscardMatrix()
 	{
-		return discardMatrix;
+		return playedCardsMatrix;
 	}
 	
 	
@@ -173,6 +178,7 @@ public class Board
      */
     public void playCard(Card card, int stack)
     {
+    	playedCardsPile.add(card);
     	fireworkStacks[stack] = card.getCardValue();
     }
     
@@ -206,15 +212,20 @@ public class Board
     
     
     /**
-     * Puts a card in the discard pile.
+     * Puts a card in the playCard pile.
      * @param card
      * @author s164166
      */
     public void discardCard(Card card)
     {
-    	discardMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
+    	playedCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
+    	playedCardsPile.add(card);
     }
     
+    public ArrayList<Card> getPlayedCards()
+    {
+    	return playedCardsPile;
+    }
 
 	/**
 	 * Creates a new board with the following playerCount.
@@ -242,19 +253,14 @@ public class Board
     	suits[4]	=	SuitEnum.GREEN;
     	
     	deck = new ArrayList<Card>();
-    	discardMatrix = new int[5][5];
+    	playedCardsMatrix = new int[5][5];
+    	playedCardsPile = new ArrayList<Card>();
 
     	fireworkStacks = new int[suits.length];
+    	deck = generateDeck();
     	for (int a = 0; a < suits.length; a++)
     	{
     		fireworkStacks[a] = 0;
-    		for (int i = 0; i < cardNumbers.length; i++)
-    		{
-    			for (int j = 0; j < cardNumbers[i]; j++)
-    			{
-        			deck.add(new Card(suits[a], i+1));
-    			}
-    		}
     	}
     	Collections.shuffle(deck);
     	int cardsToDraw = playerCount < 4 ? 5 : 4;
@@ -268,5 +274,21 @@ public class Board
    				drawCard(i);
    			}
     	}
-    }    
+    }
+
+	public ArrayList<Card> generateDeck() {
+		ArrayList<Card> deck = new ArrayList<Card>();
+		for (int a = 0; a < suits.length; a++)
+    	{
+    		for (int i = 0; i < cardNumbers.length; i++)
+    		{
+    			for (int j = 0; j < cardNumbers[i]; j++)
+    			{
+        			deck.add(new Card(suits[a], i+1));
+    			}
+    		}
+    	}
+		return deck;
+	}    
 }
+
