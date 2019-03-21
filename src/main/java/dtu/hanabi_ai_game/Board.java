@@ -179,6 +179,7 @@ public class Board
     public void playCard(Card card, int stack)
     {
     	playedCardsPile.add(card);
+    	playedCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
     	fireworkStacks[stack] = card.getCardValue();
     }
     
