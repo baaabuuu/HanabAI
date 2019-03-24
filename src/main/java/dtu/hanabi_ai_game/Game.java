@@ -3,6 +3,8 @@ package dtu.hanabi_ai_game;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import dtu.AI.AI;
+import dtu.AI.DFSStrategy;
 import log.Log;
 
 public class Game
@@ -13,7 +15,10 @@ public class Game
 	int suitCount	=	5;
 	int finalRound = -1;
 	int finished = 0;
+	int humanModifier = 0;
 	Scanner scanner = new Scanner(System.in);
+	private ArrayList<AI> AIList = new ArrayList<AI>();
+	
 	
 	public Game()
 	{
@@ -44,12 +49,16 @@ public class Game
 		}
 		board = new Board();
 		board.createNewBoard(playerCount);
+		for (int i = humanAmm; i < playerCount; i++)
+		{
+			AIList.add(new AI(new DFSStrategy(board, i, playerCount)));
+		}
 		int turn = 0;
 		while(true)
 		{
 			if (finished == 5 || board.getLife() == 0 || finalRound == turn)
 			{
-				System.out.println("Game is now over.. We should figure out a way to calculate score /s");
+				System.out.println("Game is now over... And the score is " + board.getScore());
 				break;
 			}
 			takeTurn(turn);
@@ -59,16 +68,31 @@ public class Game
 	
 	private void takeTurn(int turn)
 	{
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Log.important("turn is equal to: " + turn + " human amm is: " + humanAmm);
-		
+		Log.log("turn is equal to: " + turn + " human amm is: " + humanAmm);
+		ArrayList<Card>[] hands = getPlayerHands();
+
+		if (Log.debug)
+		{
+			Log.log("Life count is: " + board.getLife());
+			Log.log("Token count is: " + board.getClueTokens());
+			Log.log("Deck Size is: " + board.getDeckSize());
+			displayDebugPlayerhands(hands);
+		}
+		getStackPiles();
 		if (turn < humanAmm)
 		{
+			humanModifier = 1;
 			Log.log("HUMAN TURN - applying human hooks");
 			System.out.println("Player "  + (turn+1) + " its your turn!");
 			System.out.println("Revealing information specific to that player in..");
 			timer(durationBetweenTurns);
-			getStackPiles();
-			ArrayList<Card>[] hands = getPlayerHands();
 			displayPlayerhands(hands, turn);
 			while(true)
 			{
@@ -85,9 +109,20 @@ public class Game
 		}
 		else
 		{
-			Log.important("AI TURN - applying AI hooks");
+			humanModifier = 0;
+			Log.important("AI TURN - applying AI hooks for AI " + (turn - humanAmm));
+			while(true)
+			{
+				int MaxDepth = 1;
+				String action = AIList.get(turn - humanAmm).play(MaxDepth);
+				
+				Log.log("action string is: " + action);
+				if (takeAction(action, turn))
+				{
+					break;
+				}
+			}	
 		}
-		
 	}
 	
 	private String getNextInput()
@@ -114,10 +149,10 @@ public class Game
 		char symbol = action.charAt(0);
 		if (symbol == 'D' || symbol == 'd')
 		{
-			int value = Character.getNumericValue(action.charAt(1));
-			if (value > 0 && value <= board.getPlayerHand(turn).size() && board.getClueTokens() < 8)
+			int value = Character.getNumericValue(action.charAt(1)) - humanModifier;
+			if (value >= 0 && value < board.getPlayerHand(turn).size() && board.getClueTokens() < 8)
 			{
-				Card card = board.getPlayerHand(turn).remove(value - 1);
+				Card card = board.getPlayerHand(turn).remove(value);
 				card.revealSuit();
 				card.revealValue();
 				board.discardCard(card);
@@ -133,17 +168,18 @@ public class Game
 						finalRound = turn;
 					}
 				}
-				Log.log("Handling discard action for player " + turn + " they discarded " + card.getStringRepresentation());
+				Log.log("Handling discard action for player " + (turn+1) + " they discarded " + card.getStringRepresentation());
 				return true;
 			}
-			Log.log("Handling discard action for player " + turn + " they tried to discard an invalid card");
+			Log.log("Handling discard action for player " + (turn+1) + " they tried to discard an invalid card");
 			return false;
 		} else if (symbol == 'H' || symbol == 'h')
 		{
 			if (board.getClueTokens() > 0)
 			{
+				board.removeClueToken();
 				//Since range is 1-5 we want it to be 0-4 for ease of use
-				int playerNumber = Character.getNumericValue(action.charAt(1))	-	1;
+				int playerNumber = Character.getNumericValue(action.charAt(1))	-	humanModifier;
 				char identifier = action.charAt(2);
 				if (playerNumber < playerCount)
 				{
@@ -208,7 +244,7 @@ public class Game
 			int cardBeingPlayed = Character.getNumericValue(action.charAt(1));
 			if (cardBeingPlayed > 0 && cardBeingPlayed <= board.getPlayerHand(turn).size())
 			{
-				Card card = board.getPlayerHand(turn).remove(cardBeingPlayed - 1);
+				Card card = board.getPlayerHand(turn).remove(cardBeingPlayed - humanModifier);
 				card.revealSuit();
 				card.revealValue();
 				int cardSuite = card.getCardSuit().getID();
@@ -286,6 +322,28 @@ public class Game
 		}
 		return hands;
 	}
+	
+	private void displayDebugPlayerhands(ArrayList<Card>[] hands)
+	{
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < playerCount; i++)
+		{
+
+			sb.append("player: ");
+			sb.append((i+1));
+			sb.append(" has ");
+			for(Card card : hands[i])
+			{
+				sb.append(card.getStringRepresentation());
+				sb.append(' ');
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append('\n');
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		System.out.println(sb);
+	}
+
 	
 	private void displayPlayerhands(ArrayList<Card>[] hands, int turn)
 	{

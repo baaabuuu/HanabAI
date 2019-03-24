@@ -34,5 +34,5 @@ public enum SuitEnum {
 	 * @return
 	 */
 	public int getID() { return id;};
-	public String getSuitChar() {return this.getSuitChar();}
+	public String getSuitChar() {return this.suitChar;}
 }

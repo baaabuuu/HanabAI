@@ -47,7 +47,7 @@ public class Board
 		board.playedCardsPile = new ArrayList<Card>();
 		for (Card card : playedCardsPile)
 		{
-			playedCardsPile.add(card.copyCard());
+			board.playedCardsPile.add(card.copyCard());
 		}
 		board.playerHands = new ArrayList<ArrayList<Card>>();
 		board.score = score;
@@ -60,7 +60,7 @@ public class Board
 		}
 		for (int i = 0; i < playerHands.size(); i++)
 		{
-			board.playerHands.set(i, new ArrayList<Card>(playerHands.get(i).size()));
+			board.playerHands.add(new ArrayList<Card>(playerHands.get(i).size()));
 			for (Card card : playerHands.get(i))
 			{
 				board.playerHands.get(i).add(card.copyCard());
@@ -234,7 +234,7 @@ public class Board
 	 */
 	public void createNewBoard(int playerCount)
     {
-    	tokens = 6;
+    	tokens = 8;
     	life = 3;
     	cardNumbers = new int[5];
     	cardNumbers[0]	=	3;
@@ -254,7 +254,7 @@ public class Board
     	playedCardsMatrix = new int[5][5];
     	playedCardsPile = new ArrayList<Card>();
 
-    	fireworkStacks = new int[suits.length];
+    	fireworkStacks = new int[suits.length+1];
     	deck = generateDeck();
     	for (int a = 0; a < suits.length; a++)
     	{

@@ -64,12 +64,9 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		{
 			Board newBoardState = board.copyState();
 			applyAction(action, newBoardState, currPlayer);
-			
-			wrapper.addMove(new MoveWrapper(action, newBoardState));			
+			MoveWrapper newWrapper = new MoveWrapper(action, newBoardState);
+			wrapper.addMove(newWrapper);
 		}
-		
-		
-		
 	}
 	
 	/**
@@ -86,8 +83,15 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		{
 			int cardIndex = Character.getNumericValue(output.charAt(1));
 			Card card = board.getPlayerHand(turn).get(cardIndex);
+			if (card.isSuitRevealed() != true)
+			{
+				board.playCard(card, 5);
+			}
+			else
+			{
+				board.playCard(card, card.getCardSuit().getID());
+			}
 			board.addPoint();
-			board.playCard(card, card.getCardSuit().getID());
 		}
 		else if (output.charAt(0) == 'D')
 		{
@@ -100,6 +104,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		{
 			int playerIndex = Character.getNumericValue(output.charAt(1));
 			char identified = output.charAt(2);
+			board.removeClueToken();
 			if (identified == '1' || identified == '2' || identified == '3' || identified == '4' || identified == '5')
 			{
 				int cardValue = Character.getNumericValue(output.charAt(1));
@@ -127,30 +132,46 @@ public class MoveGeneratorSimple implements MoveGenerator {
 			}
 		}		
 	}
+	
+	/**
+	 * Check if its possible to play a card.
+	 * @author s164166
+	 * @param scorePool
+	 * @param card
+	 * @return
+	 */
+	private boolean checkPossiblePlay(int[] scorePool, Card card) {
+		if (card.isValueRevealed() && !card.isSuitRevealed() && scorePool[5] == 0)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				if (scorePool[i]+1 != card.getCardValue())
+				{
+					return false;
+				}
+			}
+			Log.important("AI is trying to play a " + card.getCardSuit().getSuitChar() + card.getCardValue() + " pool consisting of " + scorePool[0]);
+			return true;
+		}
+		
+		if (card.isValueRevealed() && card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
+		{
+			Log.important("AI is considering a play of " + card.getCardSuit().getSuitChar() + card.getCardValue() + " to be a good move");
+
+			return true;
+		}
+		return false;
+	}
+
 
 	private Collection<? extends Action> generatePossiblePlays(ArrayList<Card> hand, int[] scorePool) {
 		HashSet<Action> playset = new HashSet<Action>();
 		for (int i = 0; i < hand.size(); i++)
 		{
-			Card card = hand.get(0);
-			if (card.isSuitRevealed() && card.isValueRevealed() && scorePool[card.getCardSuit().getID()]+1 == card.getCardValue())
+			Card card = hand.get(i);
+			if (checkPossiblePlay(scorePool, card))
 			{
 				playset.add(new ActionPlay(i));
-			}
-			else if (card.isValueRevealed())
-			{
-				boolean possibleMove = true;
-				for (int j = 0; j < 5; j++)
-				{
-					if (scorePool[j] >= card.getCardValue())
-					{
-						possibleMove = false;
-					}
-				}
-				if (possibleMove)
-				{
-					playset.add(new ActionPlay(i));
-				}
 			}
 		}
 		return playset;
@@ -163,18 +184,24 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		int discardTarget = checkIfHandContainsUnplayableCard(hand, scorePool, board);
 		if (discardTarget == -1)
 		{
+			Log.log("Card was not considered unplayable");
 			discardTarget = removeDuplicate(hand);
-		if (discardTarget == -1)
+			if (discardTarget == -1)
 			{
+				Log.log("Card was not considered a duplicate");
 				discardTarget = noInformation(hand);
 				if (discardTarget == -1)
 				{
+					Log.log("No card information");
 					discardTarget = noValue(hand);
 					if (discardTarget == -1)
 					{
+						Log.log("No info about value");
 						discardTarget = noSuit(hand);
 						if (discardTarget == -1)
 						{
+							Log.log("No info about suit");
+
 							Log.important("Oh lord, this is an extreme edge case");
 							discardTarget = 0;
 						}
