@@ -1,7 +1,6 @@
 package dtu.AI;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ai_actions.Action;
 import dtu.hanabi_ai_game.Board;

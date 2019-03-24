@@ -118,6 +118,8 @@ public class Game
 			if (value > 0 && value <= board.getPlayerHand(turn).size() && board.getClueTokens() < 8)
 			{
 				Card card = board.getPlayerHand(turn).remove(value - 1);
+				card.revealSuit();
+				card.revealValue();
 				board.discardCard(card);
 				if (board.getClueTokens() < 8)
 				{
@@ -207,6 +209,8 @@ public class Game
 			if (cardBeingPlayed > 0 && cardBeingPlayed <= board.getPlayerHand(turn).size())
 			{
 				Card card = board.getPlayerHand(turn).remove(cardBeingPlayed - 1);
+				card.revealSuit();
+				card.revealValue();
 				int cardSuite = card.getCardSuit().getID();
 				Log.log("Top of the stack is: " + board.getTopCard(cardSuite));
 				if (board.getTopCard(cardSuite)+1 ==  card.getCardValue())

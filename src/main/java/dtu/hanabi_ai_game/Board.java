@@ -8,12 +8,12 @@ import java.util.Collections;
  * @author s164166
  *
  */
-public class Board
+public class Board 
 {
 	private ArrayList<Card> deck;
 	private ArrayList<Card> playedCardsPile;
 	private int[][] playedCardsMatrix = new int[5][5];
-	private ArrayList<Card>[] playerHand;
+	private ArrayList<ArrayList<Card>> playerHands;
 	private int[] fireworkStacks;
 	private int score;
 
@@ -39,7 +39,6 @@ public class Board
 	 * @return
 	 * @author s164166
 	 */
-	@SuppressWarnings("unchecked")
 	public Board copyState()
 	{
 		Board board = new Board();
@@ -50,7 +49,7 @@ public class Board
 		{
 			playedCardsPile.add(card.copyCard());
 		}
-		board.playerHand = new ArrayList[playerHand.length];
+		board.playerHands = new ArrayList<ArrayList<Card>>();
 		board.score = score;
 		for (int i = 0; i < 5; i++)
 		{
@@ -59,12 +58,12 @@ public class Board
 				board.playedCardsMatrix[i][j] = playedCardsMatrix[i][j];
 			}
 		}
-		for (int i = 0; i < playerHand.length; i++)
+		for (int i = 0; i < playerHands.size(); i++)
 		{
-			board.playerHand[i] = new ArrayList<Card>(playerHand[i].size());
-			for (Card card : playerHand[i])
+			board.playerHands.set(i, new ArrayList<Card>(playerHands.get(i).size()));
+			for (Card card : playerHands.get(i))
 			{
-				board.playerHand[i].add(card.copyCard());
+				board.playerHands.get(i).add(card.copyCard());
 			}
 		}
 		board.fireworkStacks = new int[fireworkStacks.length];
@@ -148,7 +147,7 @@ public class Board
      */
 	public ArrayList<Card> getPlayerHand(int playerNumber)
 	{
-		return playerHand[playerNumber];
+		return playerHands.get(playerNumber);
 	}
 	
 	/**
@@ -167,7 +166,7 @@ public class Board
      */
     public void drawCard(int playerNumber)
     {
-    	playerHand[playerNumber].add(deck.remove(0));
+    	playerHands.get(playerNumber).add(deck.remove(0));
     }
     
     /**
@@ -230,11 +229,9 @@ public class Board
 
 	/**
 	 * Creates a new board with the following playerCount.
-	 * It throws an unchecked due to how java handles declaration of arrayList array.
 	 * @param playerCount
 	 * @author s164166
 	 */
-    @SuppressWarnings("unchecked")
 	public void createNewBoard(int playerCount)
     {
     	tokens = 6;
@@ -265,11 +262,11 @@ public class Board
     	}
     	Collections.shuffle(deck);
     	int cardsToDraw = playerCount < 4 ? 5 : 4;
-    	playerHand = new ArrayList[playerCount];
+    	playerHands = new ArrayList<ArrayList<Card>>();
     	for (int i = 0; i < playerCount; i++)
     	{
     		System.out.println("drawing cards for player: " + i);
-    		playerHand[i] = new ArrayList<Card>();
+    		playerHands.add(new ArrayList<Card>());
    			for (int j = 0; j < cardsToDraw; j++)
    			{
    				drawCard(i);
@@ -290,6 +287,11 @@ public class Board
     		}
     	}
 		return deck;
-	}    
+	}   
+	
+	public ArrayList<ArrayList<Card>> getPlayerHands()
+	{
+		return playerHands;
+	}
 }
 
