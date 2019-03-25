@@ -2,6 +2,7 @@ package dtu.hanabi_ai_game;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import log.Log;
 
@@ -263,7 +264,11 @@ public class Board
     	{
     		fireworkStacks[a] = 0;
     	}
-    	Collections.shuffle(deck);
+    	
+    	Log.important("THE SHUFFLE IS SEEDED!");
+    	//Collections.shuffle(deck);
+    	Collections.shuffle(deck, new Random(1));
+
     	int cardsToDraw = playerCount < 4 ? 5 : 4;
     	playerHands = new ArrayList<ArrayList<Card>>();
     	for (int i = 0; i < playerCount; i++)
