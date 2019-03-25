@@ -107,12 +107,12 @@ public class Card
 		if (isSuitRevealed())
 		{
 			sb.append(suit.getColorCode() + "\u001B[0m");
-
+			//sb.append(suit.getSuitChar());
 		}
 		else
 		{
 			sb.append("(" + suit.getColorCode() + "\u001B[0m)");
-			
+			//sb.append("(" + suit.getSuitChar()+")");
 		}
 		
 		if (isValueRevealed())
@@ -148,4 +148,6 @@ public class Card
 		}
 		return sb.toString();
 	}
+	
+
 }

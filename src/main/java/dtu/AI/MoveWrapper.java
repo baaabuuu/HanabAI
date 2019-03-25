@@ -8,7 +8,9 @@ import dtu.hanabi_ai_game.Board;
 public class MoveWrapper
 {
 	private Action requiredAction;
-	private Board expectedBoard;	
+	private Board expectedBoard;
+	private int baseScore = 0;
+	private int fullScoreModifier = 0;
 	private ArrayList<MoveWrapper> possibleMoves = new ArrayList<MoveWrapper>();
 	
 	public MoveWrapper(Action requiredAction, Board expectedBoard)
@@ -16,6 +18,26 @@ public class MoveWrapper
 		this.requiredAction = requiredAction;
 		this.expectedBoard = expectedBoard;
 	}
+	
+	public int getBaseScore()
+	{
+		return baseScore;
+	}
+	
+	public int getFullScore()
+	{
+		return baseScore+fullScoreModifier;
+	}
+	public void AddToFullScore(int value)
+	{
+		fullScoreModifier += value;
+	}
+	
+	public void setBaseScore(int value)
+	{
+		this.baseScore = value;
+	}
+	
 	public Board getBoard()
 	{
 		return expectedBoard;

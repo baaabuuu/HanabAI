@@ -3,6 +3,8 @@ package dtu.hanabi_ai_game;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import log.Log;
+
 /**
  * Used to handle the statespace for a board.
  * @author s164166
@@ -58,6 +60,7 @@ public class Board
 				board.playedCardsMatrix[i][j] = playedCardsMatrix[i][j];
 			}
 		}
+				
 		for (int i = 0; i < playerHands.size(); i++)
 		{
 			board.playerHands.add(new ArrayList<Card>(playerHands.get(i).size()));
@@ -178,7 +181,7 @@ public class Board
     public void playCard(Card card, int stack)
     {
     	playedCardsPile.add(card);
-    	playedCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
+    	//playedCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
     	fireworkStacks[stack] = card.getCardValue();
     }
     
@@ -265,7 +268,6 @@ public class Board
     	playerHands = new ArrayList<ArrayList<Card>>();
     	for (int i = 0; i < playerCount; i++)
     	{
-    		System.out.println("drawing cards for player: " + i);
     		playerHands.add(new ArrayList<Card>());
    			for (int j = 0; j < cardsToDraw; j++)
    			{

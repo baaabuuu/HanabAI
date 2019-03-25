@@ -25,37 +25,48 @@ public class MoveGeneratorSimple implements MoveGenerator {
 	 * @param origPlayer
 	 */
 	public void generateMoves(MoveWrapper wrapper, int maxDepth, int currPlayer, int origPlayer, Predictor predictor)
-	{
+	{	
+		
+
 		Board board = wrapper.getBoard();
 		int playerCount = board.getPlayerHands().size();
-		
+	
+
 		ArrayList<ArrayList<Card>> playerHands = board.getPlayerHands();
 		int scorePool[] = board.getFireworkStacks();
 		//A set allows for unique actions, we don't wanna accidentally look at what happens when 2 green cards are played.
-		HashSet<Action> possibleActions = new HashSet<Action>();
+		ArrayList<Action> possibleActions = new ArrayList<Action>();
 		//Replace the players predicted hand with X
 		
 		ArrayList<Card> predictedHand = predictor.predict(playerHands, currPlayer, origPlayer, board);
 		playerHands.set(currPlayer, predictedHand);
 		for(int i = 0; i < playerCount; i++)
 		{
-			if (i != currPlayer && origPlayer != i)
+			if (i != currPlayer && i != origPlayer)
 			{
 				//Hint if possible.
 				if (board.getClueTokens() > 0)
 				{
+					//Log.log("Generating Hints about player: " + (i+1) + " for player: " + (currPlayer+1));
 					possibleActions.addAll(generateHints(playerHands.get(i), i));
 				}
 			}
 			else
 			{
-				//Detect all possiblePlay.
-				possibleActions.addAll(generatePossiblePlays(playerHands.get(i), scorePool));
-				
-				//Best discard if possible.
-				if (board.getClueTokens() < 8)
+				if ( i == currPlayer)
 				{
-					possibleActions.add(bestDiscard(playerHands.get(i), scorePool, board));
+					//Log.log("Generating Possible Plays for player: " + (i+1));
+					//Detect all possiblePlay.
+					possibleActions.addAll(generatePossiblePlays(playerHands.get(i), scorePool));
+					//Best discard if possible.
+					if (board.getClueTokens() < 8)
+					{
+						//Log.log("Generating Discard for player: " + (i+1));
+
+						possibleActions.add(bestDiscard(playerHands.get(i), scorePool, board));
+						//Log.log("Discard option found was: " + possibleActions.get(possibleActions.size() - 1).play());
+
+					}
 				}
 			}
 		}
@@ -107,8 +118,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 			board.removeClueToken();
 			if (identified == '1' || identified == '2' || identified == '3' || identified == '4' || identified == '5')
 			{
-				int cardValue = Character.getNumericValue(output.charAt(1));
-
+				int cardValue = Character.getNumericValue(output.charAt(2));
 				ArrayList<Card> hand = board.getPlayerHand(playerIndex);
 				for (Card card : hand)
 				{
@@ -141,7 +151,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 	 * @return
 	 */
 	private boolean checkPossiblePlay(int[] scorePool, Card card) {
-		if (card.isValueRevealed() && !card.isSuitRevealed() && scorePool[5] == 0)
+		if (!card.isSuitRevealed() && scorePool[5] == 0)
 		{
 			for (int i = 0; i < 5; i++)
 			{
@@ -150,26 +160,24 @@ public class MoveGeneratorSimple implements MoveGenerator {
 					return false;
 				}
 			}
-			Log.important("AI is trying to play a " + card.getCardSuit().getSuitChar() + card.getCardValue() + " pool consisting of " + scorePool[0]);
 			return true;
 		}
 		
-		if (card.isValueRevealed() && card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
+		if ( card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
 		{
-			Log.important("AI is considering a play of " + card.getCardSuit().getSuitChar() + card.getCardValue() + " to be a good move");
-
 			return true;
 		}
 		return false;
 	}
 
 
-	private Collection<? extends Action> generatePossiblePlays(ArrayList<Card> hand, int[] scorePool) {
+	private Collection<? extends Action> generatePossiblePlays(ArrayList<Card> hand, int[] scorePool) 
+	{
 		HashSet<Action> playset = new HashSet<Action>();
 		for (int i = 0; i < hand.size(); i++)
 		{
 			Card card = hand.get(i);
-			if (checkPossiblePlay(scorePool, card))
+			if (card.isValueRevealed() && checkPossiblePlay(scorePool, card))
 			{
 				playset.add(new ActionPlay(i));
 			}
@@ -184,25 +192,18 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		int discardTarget = checkIfHandContainsUnplayableCard(hand, scorePool, board);
 		if (discardTarget == -1)
 		{
-			Log.log("Card was not considered unplayable");
 			discardTarget = removeDuplicate(hand);
 			if (discardTarget == -1)
 			{
-				Log.log("Card was not considered a duplicate");
 				discardTarget = noInformation(hand);
 				if (discardTarget == -1)
 				{
-					Log.log("No card information");
 					discardTarget = noValue(hand);
 					if (discardTarget == -1)
 					{
-						Log.log("No info about value");
 						discardTarget = noSuit(hand);
 						if (discardTarget == -1)
 						{
-							Log.log("No info about suit");
-
-							Log.important("Oh lord, this is an extreme edge case");
 							discardTarget = 0;
 						}
 					}
@@ -214,20 +215,25 @@ public class MoveGeneratorSimple implements MoveGenerator {
 
 	private Collection<? extends Action> generateHints(ArrayList<Card> hand, int playerID)
 	{
-		HashSet<Action> collection = new HashSet<Action>();
+		ArrayList<Action> collection = new ArrayList<Action>();
 		for (Card card : hand)
 		{
 			if (!card.isSuitRevealed())
 			{
 				Action action = new ActionHint(playerID, card.getCardSuit().getSuitChar());
-				
-				collection.add(action);
+				if (!collection.stream().anyMatch(checkAction -> checkAction.play().equals(action.play())))
+				{
+					collection.add(action);
+				}
 
 			}
 			if (!card.isValueRevealed())
 			{
 				Action action = new ActionHint(playerID, String.valueOf(card.getCardValue()));
-				collection.add(action);	
+				if (!collection.stream().anyMatch(checkAction -> checkAction.play().equals(action.play())))
+				{
+					collection.add(action);
+				}
 			}
 		}
 		return collection;
@@ -323,21 +329,21 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		int[][] discardPile = board.getDiscardMatrix();
 		if (currScore == 0)
 		{
-			if (discardPile[suitIndex][0] < 3)
+			if (discardPile[suitIndex][currScore] != 3)
 			{
 				return true;
 			}
 		}
-		else if (currScore > 0 && currScore < 3)
+		else if (currScore == 1 || currScore == 2 || currScore == 3)
 		{
-			if( discardPile[suitIndex][currScore] < 2)
+			if(discardPile[suitIndex][currScore] != 2)
 			{
 				return true;
 			}
 		}
 		else if (currScore == 4)
 		{
-			if (discardPile[suitIndex][4] != 1)
+			if (discardPile[suitIndex][currScore] != 1)
 			{
 				return true;
 			}

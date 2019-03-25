@@ -52,6 +52,7 @@ public class PredictorSimple implements Predictor {
 	public ArrayList<Card> predict(ArrayList<ArrayList<Card>> hands, int turn, int origTurn, Board board) {
 		// Oh lord
 		ArrayList<Card> attempt = new ArrayList<Card>();
+
 		for (Card card : hands.get(turn))
 		{
 				attempt.add(card.copyCard());

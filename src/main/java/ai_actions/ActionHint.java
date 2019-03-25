@@ -3,6 +3,10 @@ package ai_actions;
 public class ActionHint implements Action {
 	private int target;
 	private String type;
+	public int getTarget()
+	{
+		return target;
+	}
 	public ActionHint(int target, String type)
 	{
 		this.target = target;
@@ -12,5 +16,10 @@ public class ActionHint implements Action {
 	public String play()
 	{
 		return "H"+target+type;
+	}
+
+	@Override
+	public String getActionType() {
+		return "H";
 	}
 }
