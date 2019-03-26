@@ -3,6 +3,8 @@ package dtu.hanabi_ai_game;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import dtu.AI.AI;
+import dtu.AI.DFSStrategy;
 import log.Log;
 
 public class Game
@@ -13,9 +15,36 @@ public class Game
 	int suitCount	=	5;
 	int finalRound = -1;
 	int finished = 0;
+	int humanModifier = 0;
 	Scanner scanner = new Scanner(System.in);
+	private ArrayList<AI> AIList = new ArrayList<AI>();
 	
-	public Game()
+	public int startGameGetScore(int AIcount)
+	{
+		humanAmm = 0;
+		aiAmm = AIcount;
+		playerCount = humanAmm + aiAmm;
+		board = new Board();
+		board.createNewBoard(playerCount);
+		for (int i = humanAmm; i < playerCount; i++)
+		{
+			AIList.add(new AI(new DFSStrategy(board, i, playerCount)));
+		}
+		int turn = 0;
+		while(true)
+		{
+			if (finished == 5 || board.getLife() == 0 || finalRound == turn)
+			{
+				break;
+			}
+			takeTurn(turn);
+			turn = (turn+1 == playerCount) ? 0 : turn+1;
+		}
+		return board.getScore();
+	}
+	
+	
+	public void startGame()
 	{
 		Log.important("Generating new Game");
 		System.out.println("Welcome to a new game of Hanabi.");
@@ -44,12 +73,16 @@ public class Game
 		}
 		board = new Board();
 		board.createNewBoard(playerCount);
+		for (int i = humanAmm; i < playerCount; i++)
+		{
+			AIList.add(new AI(new DFSStrategy(board, i, playerCount)));
+		}
 		int turn = 0;
 		while(true)
 		{
 			if (finished == 5 || board.getLife() == 0 || finalRound == turn)
 			{
-				System.out.println("Game is now over.. We should figure out a way to calculate score /s");
+				System.out.println("Game is now over... And the score is " + board.getScore());
 				break;
 			}
 			takeTurn(turn);
@@ -59,22 +92,30 @@ public class Game
 	
 	private void takeTurn(int turn)
 	{
-		Log.important("turn is equal to: " + turn + " human amm is: " + humanAmm);
-		
+		Log.important("turn is equal to: " +( turn+1));
+		ArrayList<Card>[] hands = getPlayerHands();
+
+		if (Log.debug)
+		{
+			getNextInput();
+			Log.log("Life count is: " + board.getLife());
+			Log.log("Token count is: " + board.getClueTokens());
+			Log.log("Deck Size is: " + board.getDeckSize());
+			displayDebugPlayerhands(hands);
+		}
+		getStackPiles();
 		if (turn < humanAmm)
 		{
+			humanModifier = 1;
 			Log.log("HUMAN TURN - applying human hooks");
 			System.out.println("Player "  + (turn+1) + " its your turn!");
 			System.out.println("Revealing information specific to that player in..");
 			timer(durationBetweenTurns);
-			getStackPiles();
-			ArrayList<Card>[] hands = getPlayerHands();
 			displayPlayerhands(hands, turn);
 			while(true)
 			{
 				getActions();
 				String action = getNextInput();
-				
 				Log.log("action string is: " + action);
 				if (takeAction(action, turn))
 				{
@@ -85,9 +126,20 @@ public class Game
 		}
 		else
 		{
-			Log.important("AI TURN - applying AI hooks");
+			humanModifier = 0;
+			Log.important("AI TURN - applying AI hooks for AI " + (turn - humanAmm+1));
+			while(true)
+			{
+				int MaxDepth = playerCount;
+				String action = AIList.get(turn - humanAmm).play(MaxDepth);
+				
+				Log.log("action string is: " + action);
+				if (takeAction(action, turn))
+				{
+					break;
+				}
+			}	
 		}
-		
 	}
 	
 	private String getNextInput()
@@ -114,10 +166,12 @@ public class Game
 		char symbol = action.charAt(0);
 		if (symbol == 'D' || symbol == 'd')
 		{
-			int value = Character.getNumericValue(action.charAt(1));
-			if (value > 0 && value <= board.getPlayerHand(turn).size() && board.getClueTokens() < 8)
+			int value = Character.getNumericValue(action.charAt(1)) - humanModifier;
+			if (value >= 0 && value < board.getPlayerHand(turn).size() && board.getClueTokens() < 8)
 			{
-				Card card = board.getPlayerHand(turn).remove(value - 1);
+				Card card = board.getPlayerHand(turn).remove(value);
+				card.revealSuit();
+				card.revealValue();
 				board.discardCard(card);
 				if (board.getClueTokens() < 8)
 				{
@@ -131,17 +185,18 @@ public class Game
 						finalRound = turn;
 					}
 				}
-				Log.log("Handling discard action for player " + turn + " they discarded " + card.getStringRepresentation());
+				Log.log("Handling discard action for player " + (turn+1) + " they discarded " + card.getStringRepresentation());
 				return true;
 			}
-			Log.log("Handling discard action for player " + turn + " they tried to discard an invalid card");
+			Log.log("Handling discard action for player " + (turn+1) + " they tried to discard an invalid card");
 			return false;
 		} else if (symbol == 'H' || symbol == 'h')
 		{
 			if (board.getClueTokens() > 0)
 			{
+				board.removeClueToken();
 				//Since range is 1-5 we want it to be 0-4 for ease of use
-				int playerNumber = Character.getNumericValue(action.charAt(1))	-	1;
+				int playerNumber = Character.getNumericValue(action.charAt(1))	-	humanModifier;
 				char identifier = action.charAt(2);
 				if (playerNumber < playerCount)
 				{
@@ -170,15 +225,15 @@ public class Game
 						{
 							id = 2;
 						}
-						else if (identifier == 'R' || identifier == 'r')
+						else if (identifier == 'Y' || identifier == 'y')
 						{
 							id = 3;
 						}
-						else if (identifier == 'R' || identifier == 'r')
+						else if (identifier == 'G' || identifier == 'g')
 						{
 							id = 4;
 						}
-							
+
 						for (Card card : board.getPlayerHand(playerNumber))
 						{
 							if (card.getCardSuit().getID() == id)
@@ -190,13 +245,13 @@ public class Game
 					}
 					else
 					{
-						Log.log("Handling help action for player " + turn + " they tried to help " + playerNumber + " but the option " + identifier + " cannot be used!");
+						Log.log("Handling help action for player " + (turn+1) + " they tried to help " + playerNumber + " but the option " + identifier + " cannot be used!");
 					}
 
 				}
 				else
 				{
-					Log.log("Handling help action for player " + turn + " they tried to help an invalid player");
+					Log.log("Handling help action for player " + (turn+1) + " they tried to help an invalid player");
 					
 				}
 				return false;
@@ -204,19 +259,22 @@ public class Game
 		} else if (symbol == 'P' || symbol == 'p')
 		{
 			int cardBeingPlayed = Character.getNumericValue(action.charAt(1));
-			if (cardBeingPlayed > 0 && cardBeingPlayed <= board.getPlayerHand(turn).size())
+			if (cardBeingPlayed >= 0 && cardBeingPlayed < board.getPlayerHand(turn).size())
 			{
-				Card card = board.getPlayerHand(turn).remove(cardBeingPlayed - 1);
+				Card card = board.getPlayerHand(turn).remove(cardBeingPlayed - humanModifier);
+				card.revealSuit();
+				card.revealValue();
 				int cardSuite = card.getCardSuit().getID();
 				Log.log("Top of the stack is: " + board.getTopCard(cardSuite));
 				if (board.getTopCard(cardSuite)+1 ==  card.getCardValue())
 				{
 					board.playCard(card, cardSuite);
+					board.addPoint();
 					if (card.getCardValue() == 5 && board.getClueTokens() < 8)
 					{
 						finished++;
 						board.addClueToken();
-						Log.log("player play action for player " + turn + " they played " + card.getStringRepresentation() + " succesfully.");
+						Log.log("player play action for player " + (turn+1) + " they played " + card.getStringRepresentation() + " succesfully.");
 
 					}
 				}
@@ -224,7 +282,7 @@ public class Game
 				{
 					board.discardCard(card);
 					board.removeLife();
-					Log.log("player play action for player " + turn + " they played " + card.getStringRepresentation() + " unsuccesfully.");
+					Log.log("player play action for player " + (turn+1) + " they played " + card.getStringRepresentation() + " unsuccesfully.");
 
 				}
 				
@@ -238,7 +296,7 @@ public class Game
 				}
 				return true;
 			}
-			Log.log("Handling discard action for player " + turn + " they tried to discard an invalid card");
+			Log.log("Discarding from play due to invalid play for player " + (turn+1) + " they tried to discard an invalid card");
 			return false;
 		}
 		return false;
@@ -247,8 +305,14 @@ public class Game
 	
 	public void getStackPiles()
 	{
-		System.out.println("Top of each firework stack is:");
-		System.out.println("W"+board.getTopCard(0) + " R"+board.getTopCard(1) + " B"+board.getTopCard(2) + " Y"+board.getTopCard(3) + " G"+board.getTopCard(4));
+		if (!Log.debug)
+		{
+			System.out.println("Top of each firework stack is:");
+			System.out.println("W"+board.getTopCard(0) + " R"+board.getTopCard(1) + " B"+board.getTopCard(2) + " Y"+board.getTopCard(3) + " G"+board.getTopCard(4));
+		}
+		Log.log("Top of each firework stack is:");
+		Log.log("W"+board.getTopCard(0) + " R"+board.getTopCard(1) + " B"+board.getTopCard(2) + " Y"+board.getTopCard(3) + " G"+board.getTopCard(4));
+
 	}
 	
 	
@@ -283,6 +347,29 @@ public class Game
 		return hands;
 	}
 	
+	private void displayDebugPlayerhands(ArrayList<Card>[] hands)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		for (int i = 0; i < playerCount; i++)
+		{
+
+			sb.append("player: ");
+			sb.append((i+1));
+			sb.append(" has ");
+			for(Card card : hands[i])
+			{
+				sb.append(card.getStringRepresentation());
+				sb.append(' ');
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append('\n');
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		Log.log(sb.toString());
+	}
+
+	
 	private void displayPlayerhands(ArrayList<Card>[] hands, int turn)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -314,8 +401,12 @@ public class Game
 			
 		}
 		sb.deleteCharAt(sb.length() - 1);
-		System.out.println(sb);
+		Log.log(sb.toString());
 	}
 	
+	public int[] getStacks()
+	{
+		return board.getFireworkStacks();
+	}
 
 }

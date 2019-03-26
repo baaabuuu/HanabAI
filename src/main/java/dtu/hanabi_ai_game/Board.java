@@ -2,18 +2,21 @@ package dtu.hanabi_ai_game;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.Random;
+
+import log.Log;
 
 /**
  * Used to handle the statespace for a board.
  * @author s164166
  *
  */
-public class Board
+public class Board 
 {
 	private ArrayList<Card> deck;
-	private ArrayList<Card> discardPile;
-	private ArrayList<Card>[] playerHand;
+	private ArrayList<Card> playedCardsPile;
+	private int[][] playedCardsMatrix = new int[5][5];
+	private ArrayList<ArrayList<Card>> playerHands;
 	private int[] fireworkStacks;
 	private int score;
 
@@ -39,20 +42,32 @@ public class Board
 	 * @return
 	 * @author s164166
 	 */
-	@SuppressWarnings("unchecked")
 	public Board copyState()
 	{
 		Board board = new Board();
 		board.deck = new ArrayList<Card>(deck);
-		board.discardPile = new ArrayList<Card>(discardPile);
-		board.playerHand = new ArrayList[playerHand.length];
-		board.score = score;
-		for (int i = 0; i < playerHand.length; i++)
+		board.playedCardsMatrix = new int[5][5];
+		board.playedCardsPile = new ArrayList<Card>();
+		for (Card card : playedCardsPile)
 		{
-			board.playerHand[i] = new ArrayList<Card>(playerHand[i].size());
-			for (Card card : playerHand[i])
+			board.playedCardsPile.add(card.copyCard());
+		}
+		board.playerHands = new ArrayList<ArrayList<Card>>();
+		board.score = score;
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 5; j++)
 			{
-				board.playerHand[i].add(card.copyCard());
+				board.playedCardsMatrix[i][j] = playedCardsMatrix[i][j];
+			}
+		}
+				
+		for (int i = 0; i < playerHands.size(); i++)
+		{
+			board.playerHands.add(new ArrayList<Card>(playerHands.get(i).size()));
+			for (Card card : playerHands.get(i))
+			{
+				board.playerHands.get(i).add(card.copyCard());
 			}
 		}
 		board.fireworkStacks = new int[fireworkStacks.length];
@@ -75,6 +90,18 @@ public class Board
 		}
 		return board;
 		
+	}
+	
+	/**
+	 * Discard Matric constraints
+	 * <br>First is suit</br>
+	 * <br>Second is value</br>
+	 * @author s164166
+	 * @return
+	 */
+	public int[][] getDiscardMatrix()
+	{
+		return playedCardsMatrix;
 	}
 	
 	
@@ -124,7 +151,7 @@ public class Board
      */
 	public ArrayList<Card> getPlayerHand(int playerNumber)
 	{
-		return playerHand[playerNumber];
+		return playerHands.get(playerNumber);
 	}
 	
 	/**
@@ -143,7 +170,7 @@ public class Board
      */
     public void drawCard(int playerNumber)
     {
-    	playerHand[playerNumber].add(deck.remove(0));
+    	playerHands.get(playerNumber).add(deck.remove(0));
     }
     
     /**
@@ -154,6 +181,8 @@ public class Board
      */
     public void playCard(Card card, int stack)
     {
+    	playedCardsPile.add(card);
+    	//playedCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
     	fireworkStacks[stack] = card.getCardValue();
     }
     
@@ -180,28 +209,36 @@ public class Board
     	return fireworkStacks[stack];
     }
     
+    public int[] getFireworkStacks()
+    {
+    	return fireworkStacks;
+    }
+    
     
     /**
-     * Puts a card in the discard pile.
+     * Puts a card in the playCard pile.
      * @param card
      * @author s164166
      */
     public void discardCard(Card card)
     {
-    	discardPile.add(card);
+    	playedCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
+    	playedCardsPile.add(card);
     }
     
+    public ArrayList<Card> getPlayedCards()
+    {
+    	return playedCardsPile;
+    }
 
 	/**
 	 * Creates a new board with the following playerCount.
-	 * It throws an unchecked due to how java handles declaration of arrayList array.
 	 * @param playerCount
 	 * @author s164166
 	 */
-    @SuppressWarnings("unchecked")
 	public void createNewBoard(int playerCount)
     {
-    	tokens = 6;
+    	tokens = 8;
     	life = 3;
     	cardNumbers = new int[5];
     	cardNumbers[0]	=	3;
@@ -218,11 +255,36 @@ public class Board
     	suits[4]	=	SuitEnum.GREEN;
     	
     	deck = new ArrayList<Card>();
-    	discardPile = new ArrayList<Card>();
-    	fireworkStacks = new int[suits.length];
+    	playedCardsMatrix = new int[5][5];
+    	playedCardsPile = new ArrayList<Card>();
+
+    	fireworkStacks = new int[suits.length+1];
+    	deck = generateDeck();
     	for (int a = 0; a < suits.length; a++)
     	{
     		fireworkStacks[a] = 0;
+    	}
+    	
+    	//Log.important("THE SHUFFLE IS SEEDED!");
+    	Collections.shuffle(deck);
+    	//Collections.shuffle(deck, new Random(1));
+
+    	int cardsToDraw = playerCount < 4 ? 5 : 4;
+    	playerHands = new ArrayList<ArrayList<Card>>();
+    	for (int i = 0; i < playerCount; i++)
+    	{
+    		playerHands.add(new ArrayList<Card>());
+   			for (int j = 0; j < cardsToDraw; j++)
+   			{
+   				drawCard(i);
+   			}
+    	}
+    }
+
+	public ArrayList<Card> generateDeck() {
+		ArrayList<Card> deck = new ArrayList<Card>();
+		for (int a = 0; a < suits.length; a++)
+    	{
     		for (int i = 0; i < cardNumbers.length; i++)
     		{
     			for (int j = 0; j < cardNumbers[i]; j++)
@@ -231,17 +293,12 @@ public class Board
     			}
     		}
     	}
-    	Collections.shuffle(deck);
-    	int cardsToDraw = playerCount < 4 ? 5 : 4;
-    	playerHand = new ArrayList[playerCount];
-    	for (int i = 0; i < playerCount; i++)
-    	{
-    		System.out.println("drawing cards for player: " + i);
-    		playerHand[i] = new ArrayList<Card>();
-   			for (int j = 0; j < cardsToDraw; j++)
-   			{
-   				drawCard(i);
-   			}
-    	}
-    }    
+		return deck;
+	}   
+	
+	public ArrayList<ArrayList<Card>> getPlayerHands()
+	{
+		return playerHands;
+	}
 }
+

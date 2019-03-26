@@ -1,5 +1,6 @@
 package dtu.AI;
-import dtu.hanabi_ai_game.SuitEnum;
+
+
 public enum GameAction {
 	PLAY("P"),
 	HINTSUIT("H"),
