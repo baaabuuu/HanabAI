@@ -10,6 +10,8 @@ import dtu.hanabi_ai_game.SuitEnum;
 
 public class BoardScorerSimple implements BoardScorer
 {
+	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
+
 	private int pointsForInformation = 7;
 	private int pointsForLowValue = 25;
 	private int pointsForLeftMostPlayable = 3;
@@ -63,7 +65,7 @@ public class BoardScorerSimple implements BoardScorer
 		double score = 0;
 		if (board.getScore() == 25)
 		{
-			return Integer.MAX_VALUE-50000;
+			return Integer.MAX_VALUE-1000000;
 		}
 		ArrayList<ArrayList<Card>> hands = new ArrayList<ArrayList<Card>>();
 		
@@ -212,28 +214,29 @@ public class BoardScorerSimple implements BoardScorer
 		return 0;
 	}
 
-	/**
-	 * Check if its possible to play a card.
-	 * @author s164166
-	 * @param scorePool
-	 * @param card
-	 * @return
-	 */
+	
 	private boolean checkPossiblePlay(int[] scorePool, Card card) {
-		if (!card.isSuitRevealed() && scorePool[5] == 0)
+		if (card.isValueRevealed())
 		{
-			for (int i = 0; i < 5; i++)
+			if (!card.isSuitRevealed())
 			{
-				if (scorePool[i]+1 != card.getCardValue())
+				for (int i = 0; i < 5; i++)
 				{
-					return false;
+					if (card.isCard(suits[i]) && scorePool[i] + 1 != card.getCardValue())
+					{
+						return false;
+					}
 				}
-
+				return true;
 			}
-			return true;
+			
+			if ( card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
+			{
+				return true;
+			}
+
 		}
-		
-		if (card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
+		if (card.isPlayable())
 		{
 			return true;
 		}

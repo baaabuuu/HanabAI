@@ -7,7 +7,9 @@ import dtu.hanabi_ai_game.Card;
 import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
 
-public class PredictorSimple implements Predictor {
+public class PredictorAdvanced implements Predictor {
+
+	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
 
 	
 	/**
@@ -49,6 +51,7 @@ public class PredictorSimple implements Predictor {
 		return potentialCards;
 	}
 	
+
 	@Override
 	public ArrayList<Card> predict(ArrayList<ArrayList<Card>> hands, int turn, int origTurn, Board board) {
 		ArrayList<Card> attempt = new ArrayList<Card>();
@@ -57,7 +60,7 @@ public class PredictorSimple implements Predictor {
 				attempt.add(card.copyCard());
 		}
 		ArrayList<Card> potentialCards = generatePotentialCards(hands, turn, origTurn, board);
-		while (true) 
+		while (true)
 		{
 			boolean guess = false;
 			for (int i = 0; i < attempt.size(); i++) {
@@ -90,6 +93,47 @@ public class PredictorSimple implements Predictor {
 			}
 		}
 		
+		int[] suitCopies = {0,0,0,0,0};
+		int[] numberCopies = {0,0,0,0,0};
+		boolean isEverythingPlayable = false;
+		for (Card card : potentialCards)
+		{
+			suitCopies[card.getCardSuit().getID()]++;
+			numberCopies[card.getCardValue()]++;
+			if (isEverythingPlayable && card.getCardValue() != board.getFireworkStacks()[card.getCardSuit().getID()] + 1)
+			{
+				isEverythingPlayable = false;
+			}
+		}
+		
+		
+		for (Card card : attempt)
+		{
+			if (isEverythingPlayable)
+			{
+				card.setPlayable();
+			}
+			if (!card.isValueRevealed())
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					if (numberCopies[i] == 0)
+					{
+						card.isNot(i);
+					}
+				}
+			}
+			if (!card.isSuitRevealed())
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					if (suitCopies[i] == 0)
+					{
+						card.isNot(suits[i]);
+					}
+				}
+			}
+		}
 		return attempt;
 	}
 

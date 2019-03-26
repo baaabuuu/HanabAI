@@ -12,12 +12,23 @@ public class Card
 {
 	private SuitEnum suit;
 	private int cardValue;
-	private List<SuitEnum> possibleSuites = new ArrayList<SuitEnum>();
-	private List<Integer> possibleValues = new ArrayList<Integer>();
-	
+	private ArrayList<SuitEnum> possibleSuites = new ArrayList<SuitEnum>();
+	private ArrayList<Integer> possibleValues = new ArrayList<Integer>();
 	
 	private boolean suitRevealed = false;
 	private boolean valueRevealed = false;
+	private boolean playable = false;
+	
+	public boolean isPlayable()
+	{
+		return playable;
+	}
+	
+	public void setPlayable()
+	{
+		playable = true;
+	}
+	
 	/**
 	 * Copies a card
 	 * @author s164166
@@ -26,14 +37,14 @@ public class Card
 	public Card copyCard()
 	{
 		Card card = new Card(getCardSuit(), getCardValue());
-			for (SuitEnum possibleSuit : possibleSuites)
-			{
-				card.possibleSuites.add(possibleSuit);
-			}
-			for (Integer suitValue : possibleValues)
-			{
-				card.possibleValues.add(new Integer(suitValue));
-			}
+		for (SuitEnum possibleSuit : possibleSuites)
+		{
+			card.possibleSuites.add(possibleSuit);
+		}
+		for (Integer suitValue : possibleValues)
+		{
+			card.possibleValues.add(new Integer(suitValue));
+		}
 		card.suitRevealed = suitRevealed;
 		card.valueRevealed = valueRevealed;
 		return card;
@@ -68,7 +79,43 @@ public class Card
 	{
 		this.suit = suit;
 		cardValue = value;
+		possibleSuites.add(SuitEnum.WHITE);
+		possibleSuites.add(SuitEnum.BLUE);
+		possibleSuites.add(SuitEnum.GREEN);
+		possibleSuites.add(SuitEnum.RED);
+		possibleSuites.add(SuitEnum.WHITE);
+		possibleValues.add(1);
+		possibleValues.add(2);
+		possibleValues.add(3);
+		possibleValues.add(4);
+		possibleValues.add(5);
 	}
+	
+	public void isNot(int value)
+	{
+		possibleValues.remove(value);
+	}
+	
+	public void isNot(SuitEnum suit)
+	{
+		possibleSuites.remove(suit);
+	}
+	
+	public boolean isCard(int value)
+	{
+		return possibleValues.contains(value);
+	}
+	
+	public boolean isCard(SuitEnum suit)
+	{
+		return possibleSuites.contains(suit);
+	}
+	
+	public ArrayList<Integer> getPossibleValues()
+	{
+		return possibleValues;
+	}
+	
 	/**
 	 * Check if a suit is revealed
 	 * @author s164166
@@ -78,6 +125,7 @@ public class Card
 	{
 		return suitRevealed;
 	}
+	
 	/**
 	 * Check if a value is revealed.
 	 * @author s164166

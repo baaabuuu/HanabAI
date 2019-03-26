@@ -14,7 +14,7 @@ import dtu.hanabi_ai_game.Card;
 import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
 
-public class MoveGeneratorSimple implements MoveGenerator {
+public class MoveGeneratorAdvanced implements MoveGenerator {
 
 	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
 			
@@ -161,7 +161,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 			{
 				for (int i = 0; i < 5; i++)
 				{
-					if (scorePool[i] + 1 != card.getCardValue())
+					if (card.isCard(suits[i]) && scorePool[i] + 1 != card.getCardValue())
 					{
 						return false;
 					}
@@ -173,8 +173,12 @@ public class MoveGeneratorSimple implements MoveGenerator {
 			{
 				return true;
 			}
+
 		}
-		
+		if (card.isPlayable())
+		{
+			return true;
+		}
 		return false;
 	}
 

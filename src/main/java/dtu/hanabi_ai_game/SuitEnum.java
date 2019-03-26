@@ -35,4 +35,21 @@ public enum SuitEnum {
 	 */
 	public int getID() { return id;};
 	public String getSuitChar() {return this.suitChar;}
+	
+	public static SuitEnum fromInteger(int x) 
+	{
+        switch(x) {
+        case 0:
+            return WHITE;
+        case 1:
+            return RED;
+        case 2:
+            return BLUE;
+        case 3:
+            return YELLOW;
+        case 4:
+            return GREEN;
+        }
+        return null;
+    }
 }
