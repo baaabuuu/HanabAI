@@ -1,5 +1,10 @@
 package ai_actions;
 
+/**
+ * The action for a play the letter P + the index and a few getter methods.
+ * @author s164166
+ *
+ */
 public class ActionPlay implements Action {
 	
 	private int index;

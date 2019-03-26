@@ -265,9 +265,9 @@ public class Board
     		fireworkStacks[a] = 0;
     	}
     	
-    	Log.important("THE SHUFFLE IS SEEDED!");
-    	//Collections.shuffle(deck);
-    	Collections.shuffle(deck, new Random(1));
+    	//Log.important("THE SHUFFLE IS SEEDED!");
+    	Collections.shuffle(deck);
+    	//Collections.shuffle(deck, new Random(1));
 
     	int cardsToDraw = playerCount < 4 ? 5 : 4;
     	playerHands = new ArrayList<ArrayList<Card>>();
