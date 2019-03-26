@@ -13,10 +13,10 @@ public class BoardScorerSimple implements BoardScorer
 	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
 
 	private int pointsForInformation = 7;
-	private int pointsForLowValue = 20;
+	private int pointsForLowValue = 15;
 	private int pointsForLeftMostPlayable = 3;
 	private int pointsForPossibleFuture = 5;
-	private int pointsForFullInformation = 14;
+	private int pointsForFullInformation = 7;
 	private int pointsForLast1Numeric = 0;
 	private int pointsForSecondLast1Numeric = 0;
 	private int pointsForLastCopy = 0;
@@ -29,6 +29,7 @@ public class BoardScorerSimple implements BoardScorer
 	
 	private int pointsPerScore = 200;
 	private int pointForCliff = 200;
+	private int pointsForUnindentified = 500;
 
 	
 	private	Double depthModifier = -0.0;
@@ -36,6 +37,7 @@ public class BoardScorerSimple implements BoardScorer
 	private	int actionPointsDiscard = 0;
 	private	int actionPointsHint = 0;
 	private	int actionPointsPlay = 300;
+	private int pointsForOptimalPoints = 2500000;
 	
 	
 	
@@ -63,9 +65,13 @@ public class BoardScorerSimple implements BoardScorer
 	public int getBoardScore(Board board, int origTurn, Action action, int currDepth, int maxDepth)
 	{
 		double score = 0;
-		if (board.getScore() == 25)
+		
+		int max = calculateMax(board);
+		score += (pointsPerScore*100)*max;
+
+		if (board.getScore() == max)
 		{
-			return Integer.MAX_VALUE-1000000;
+			return pointsForOptimalPoints;
 		}
 		ArrayList<ArrayList<Card>> hands = new ArrayList<ArrayList<Card>>();
 		
@@ -79,9 +85,14 @@ public class BoardScorerSimple implements BoardScorer
 			}
 		}
 		
+
 		
 		score += pointsForDiscard(hands.get(origTurn).get(action.getTarget()), action);
+		score += pointsForUnindentifiedPlay(hands.get(origTurn).get(action.getTarget()), action);
 		hands.remove(origTurn);
+		
+		
+		
 		for (ArrayList<Card> hand : board.getPlayerHands())
 		{
 			score += countPointsForSuitAndValue(hand, board.getFireworkStacks(), origTurn, board);
@@ -90,10 +101,41 @@ public class BoardScorerSimple implements BoardScorer
 		score += pointsPerScore*board.getScore();
 		score += scoreBoardRows(board);
 		score += pointsForAction(action);
+		
 		score *= depthModifier(currDepth, maxDepth);
 		return (int) score;
 	}
 	
+	private double pointsForUnindentifiedPlay(Card card, Action action) {
+		if (action.getActionType().equals("P"))
+		{
+			if (!card.isSuitRevealed() && card.isValueRevealed())
+			{
+				return pointsForUnindentified;
+			}
+		}
+		return 0;
+	}
+
+	private int calculateMax(Board board) {
+		int[][] discardMatrix = board.getDiscardMatrix();
+		
+		int max = 25;
+		int[] cards = {3,2,2,2,1};
+		for (int j = 0; j < 5; j++)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				if (discardMatrix[j][i] == cards[i])
+				{
+					max -= (6-i);
+					break;
+				}
+			}
+		}
+		return max;
+	}
+
 	private double pointsForDiscard(Card card, Action action) 
 	{
 		if (action.getActionType().equals("D"))
@@ -215,11 +257,16 @@ public class BoardScorerSimple implements BoardScorer
 	}
 
 	
-	private boolean checkPossiblePlay(int[] scorePool, Card card) {
+	private boolean checkPossiblePlay(int[] scorePool, Card card)
+	{
 		if (card.isValueRevealed())
 		{
 			if (!card.isSuitRevealed())
 			{
+				if (scorePool[5] != 0 && !card.isPlayable())
+				{
+					return false;
+				}
 				for (int i = 0; i < 5; i++)
 				{
 					if (card.isCard(suits[i]) && scorePool[i] + 1 != card.getCardValue())
@@ -229,8 +276,7 @@ public class BoardScorerSimple implements BoardScorer
 				}
 				return true;
 			}
-			
-			if ( card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
+			else if (scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
 			{
 				return true;
 			}

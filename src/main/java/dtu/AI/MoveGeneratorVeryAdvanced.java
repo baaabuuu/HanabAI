@@ -3,8 +3,6 @@ package dtu.AI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import ai_actions.Action;
 import ai_actions.ActionDiscard;
@@ -19,7 +17,7 @@ import log.Log;
 public class MoveGeneratorVeryAdvanced implements MoveGenerator {
 
 	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
-			
+	private int[] ageMin = {0, 4, 4, 3, 2, 2};
 	@Override
 	/**
 	 * Generates a series of possible moves given the information that is available.
@@ -57,7 +55,7 @@ public class MoveGeneratorVeryAdvanced implements MoveGenerator {
 			else
 			{
 				//age the hands!
-				predictedHand.forEach( card -> card.addAge());
+
 
 				if ( i == currPlayer)
 				{
@@ -70,6 +68,7 @@ public class MoveGeneratorVeryAdvanced implements MoveGenerator {
 						//Log.log("Generating Discard for player: " + (i+1));
 
 						possibleActions.add(bestDiscard(playerHands.get(i), scorePool, board, currPlayer, origPlayer));
+
 						//Log.log("Discard option found was: " + possibleActions.get(possibleActions.size() - 1).play());
 
 					}
@@ -130,7 +129,6 @@ public class MoveGeneratorVeryAdvanced implements MoveGenerator {
 				{
 					if (card.getCardValue() == cardValue)
 					{
-						card.resetAge();
 						card.revealValue();
 					}
 				}
@@ -143,7 +141,6 @@ public class MoveGeneratorVeryAdvanced implements MoveGenerator {
 				{
 					if (card.getCardSuit().getSuitChar().charAt(0) == identified)
 					{
-						card.resetAge();
 						card.revealSuit();
 					}
 				}
@@ -164,6 +161,10 @@ public class MoveGeneratorVeryAdvanced implements MoveGenerator {
 		{
 			if (!card.isSuitRevealed())
 			{
+				if (scorePool[5] != 0 && !card.isPlayable())
+				{
+					return false;
+				}
 				for (int i = 0; i < 5; i++)
 				{
 					if (card.isCard(suits[i]) && scorePool[i] + 1 != card.getCardValue())
@@ -173,8 +174,7 @@ public class MoveGeneratorVeryAdvanced implements MoveGenerator {
 				}
 				return true;
 			}
-			
-			if ( card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
+			else if (scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
 			{
 				return true;
 			}
@@ -206,7 +206,8 @@ public class MoveGeneratorVeryAdvanced implements MoveGenerator {
 	{
 
 		//Identify possible discard targets, instead of considering all - states we want only the best possible discard thing.
-		int discardTarget = cardsOverCertainAge(5, hand, board, turn, originalPlayerID);
+		int cutOff = ageMin[board.getPlayerHands().size()];
+		int discardTarget = cardsOverCertainAge(cutOff, hand, board);
 		if (discardTarget == -1)
 		{
 			discardTarget = checkIfHandContainsUnplayableCard(hand, scorePool, board);
@@ -235,77 +236,40 @@ public class MoveGeneratorVeryAdvanced implements MoveGenerator {
 		return new ActionDiscard(discardTarget);
 	}
 
-	private int cardsOverCertainAge(int ageCutoff, ArrayList<Card> hand, Board board, int playerID, int originalPlayerID)
+	
+	private int cardsOverCertainAge(int ageCutoff, ArrayList<Card> hand, Board board)
 	{
-		int[] cardsLeft = {10,10,10,10,10};
-		int playerCount = board.getPlayerHands().size();
-		for (int i = 0; i < playerCount; i++)
+		
+		int min = board.getFireworkStacks()[0];
+		for (int j = 1; j < 5; j++)
 		{
-			ArrayList<Card> iteratingHand = board.getPlayerHands().get(i);
-			if (i != playerID && i!= originalPlayerID)
+			if (board.getFireworkStacks()[1] < min)
 			{
-				//Identify how much of each suit is left.
-				for (Card card : iteratingHand)
-				{
-					cardsLeft[card.getCardSuit().getID()]--;
-				}
-			}
-			else
-			{
-				//Identify how much of each suit is left.
-				for (Card card : iteratingHand)
-				{
-					if (card.isSuitRevealed())
-					{
-						cardsLeft[card.getCardSuit().getID()]--;
-					}
-				}
+				min = board.getFireworkStacks()[1];
 			}
 		}
-		
-	
-		
+		min++;
+
+
 		Card target = null;
 		int index = -1;
 		for (int i = 0; i < hand.size(); i++)
 		{
 			Card comparisonCard = hand.get(i);
-			//Only consider cards with partial information.
-			//Full info gets discarded later.
-			if (((comparisonCard.isSuitRevealed() && !comparisonCard.isValueRevealed()) ||
-					 !comparisonCard.isSuitRevealed() && comparisonCard.isValueRevealed()))
+			if (comparisonCard.isValueRevealed() && target == null && comparisonCard.getAge() > ageCutoff && comparisonCard.getCardValue() == min)
 			{
-				if (target == null && comparisonCard.getAge() >= ageCutoff) //If its null, check comapred to cutoff
-				{
-					target = comparisonCard;
-					index = i;
-				}
-				else if (target != null && comparisonCard.getAge() >= target.getAge() && 
-						comparisonCard.isValueRevealed() && target.isValueRevealed() &&
-						target.getCardValue() > comparisonCard.getCardValue()) //If the value is greater than the other and value is revealed - identify value importance
-				{
-					target = comparisonCard;
-					index = i;
-				}
-				else if (target != null && comparisonCard.getAge() >= target.getAge() &&
-						comparisonCard.isValueRevealed() && !target.isValueRevealed()) //if value is revealed on one, but not the other - identify type importance
-				{
-					target = comparisonCard;
-					index = i;
-				}
-				else if (target != null && comparisonCard.getAge() >= target.getAge() &&
-						comparisonCard.isSuitRevealed() && target.isSuitRevealed() &&
-						cardsLeft[comparisonCard.getCardSuit().getID()] > cardsLeft[target.getCardSuit().getID()]) //if suit is revealed on both, pick the shittiest suit.
-				{
-					target = comparisonCard;
-					index  = i;
-				}
+				index = i;
+				target = comparisonCard;
 			}
-			
-			
+			else if (comparisonCard.isValueRevealed() && target != null && comparisonCard.getAge() > target.getAge() && comparisonCard.getCardValue() == min)
+			{
+				index = i;
+				target = comparisonCard;
+			}
 		}
 		return index;
 	}
+	
 
 	private Collection<? extends Action> generateHints(ArrayList<Card> hand, int playerID)
 	{

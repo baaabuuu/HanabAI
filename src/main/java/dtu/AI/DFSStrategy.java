@@ -1,5 +1,6 @@
 package dtu.AI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class DFSStrategy implements Strategy
 	private int id;
 	private int playerCount;
 	private Predictor predictor = new PredictorAdvanced();
-	private MoveGenerator generator = new MoveGeneratorAdvanced();
+	private MoveGenerator generator = new MoveGeneratorVeryAdvanced();
 	private BoardScorer scorer = new BoardScorerSimple();
 
 	public DFSStrategy(Board gameState, int id, int playerCount)
@@ -65,7 +66,6 @@ public class DFSStrategy implements Strategy
 				Log.important("Move " + i  );
 				Log.log("Action:  " + possibleMoves.get(i).getAction().play() );
 				Log.log("Score:  " + scores.get(i));
-	
 			}
 		}
 		Action bestAction = possibleMoves.get(0).getAction();
@@ -100,6 +100,19 @@ public class DFSStrategy implements Strategy
 		
 		for (int i = 0; i < possibleMoves.size(); i++)
 		{
+			Board board = possibleMoves.get(i).getBoard();	
+			int min = board.getFireworkStacks()[0];
+			for (int j = 1; j < 5; j++)
+			{
+				if (board.getFireworkStacks()[1] < min)
+				{
+					min = board.getFireworkStacks()[1];
+				}
+			}
+			int temp = min+1;
+			board.getPlayerHand(nextPlayer).stream().filter(card -> card.isValueRevealed() && card.getCardValue() == temp).forEach(card -> card.addAge());
+					
+
 			int points = scoreFutureMoves(possibleMoves.get(i), currDepth+1, maxDepth, nextPlayer, baseAction);
 			scores.add(points);
 		}
@@ -114,7 +127,6 @@ public class DFSStrategy implements Strategy
 		{
 			sb.append(wrap.getAction().play() + ", ");
 		}
-		sb.setLength(sb.length() - 2);
 		return sb.toString();
 	}
 	

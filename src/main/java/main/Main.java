@@ -9,8 +9,8 @@ public class Main {
 
 	public static void main(String[] args)
 	{
-		runMultipleGames(30, 3);
-		//runOneGame(3);
+		runMultipleGames(10, 3);
+		//runOneGame(4);
 	}
 	
 	public static void runMultipleGames( int gameCount, int AIcount)

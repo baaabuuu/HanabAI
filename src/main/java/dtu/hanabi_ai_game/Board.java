@@ -15,7 +15,7 @@ public class Board
 {
 	private ArrayList<Card> deck;
 	private ArrayList<Card> playedCardsPile;
-	private int[][] playedCardsMatrix = new int[5][5];
+	private int[][] discardCardsMatrix = new int[5][5];
 	private ArrayList<ArrayList<Card>> playerHands;
 	private int[] fireworkStacks;
 	private int score;
@@ -46,7 +46,7 @@ public class Board
 	{
 		Board board = new Board();
 		board.deck = new ArrayList<Card>(deck);
-		board.playedCardsMatrix = new int[5][5];
+		board.discardCardsMatrix = new int[5][5];
 		board.playedCardsPile = new ArrayList<Card>();
 		for (Card card : playedCardsPile)
 		{
@@ -58,7 +58,7 @@ public class Board
 		{
 			for (int j = 0; j < 5; j++)
 			{
-				board.playedCardsMatrix[i][j] = playedCardsMatrix[i][j];
+				board.discardCardsMatrix[i][j] = discardCardsMatrix[i][j];
 			}
 		}
 				
@@ -93,7 +93,7 @@ public class Board
 	}
 	
 	/**
-	 * Discard Matric constraints
+	 * Discard Matrix constraints
 	 * <br>First is suit</br>
 	 * <br>Second is value</br>
 	 * @author s164166
@@ -101,7 +101,7 @@ public class Board
 	 */
 	public int[][] getDiscardMatrix()
 	{
-		return playedCardsMatrix;
+		return discardCardsMatrix;
 	}
 	
 	
@@ -182,7 +182,6 @@ public class Board
     public void playCard(Card card, int stack)
     {
     	playedCardsPile.add(card);
-    	//playedCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
     	fireworkStacks[stack] = card.getCardValue();
     }
     
@@ -222,7 +221,7 @@ public class Board
      */
     public void discardCard(Card card)
     {
-    	playedCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
+    	discardCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
     	playedCardsPile.add(card);
     }
     
@@ -255,7 +254,7 @@ public class Board
     	suits[4]	=	SuitEnum.GREEN;
     	
     	deck = new ArrayList<Card>();
-    	playedCardsMatrix = new int[5][5];
+    	discardCardsMatrix = new int[5][5];
     	playedCardsPile = new ArrayList<Card>();
 
     	fireworkStacks = new int[suits.length+1];
@@ -267,7 +266,7 @@ public class Board
     	
     	//Log.important("THE SHUFFLE IS SEEDED!");
     	Collections.shuffle(deck);
-    	//Collections.shuffle(deck, new Random(1));
+    	//Collections.shuffle(deck, new Random(2));
 
     	int cardsToDraw = playerCount < 4 ? 5 : 4;
     	playerHands = new ArrayList<ArrayList<Card>>();

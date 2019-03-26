@@ -1,6 +1,7 @@
 package dtu.hanabi_ai_game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import dtu.AI.AI;
@@ -94,9 +95,19 @@ public class Game
 	private void takeTurn(int turn)
 	{
 		Log.important("turn is equal to: " +( turn+1));
+
 		ArrayList<Card>[] hands = getPlayerHands();
 		//age each card.
-		hands[turn].forEach( card -> card.addAge());
+		int min = board.getFireworkStacks()[0];
+		for (int j = 1; j < 5; j++)
+		{
+			if (board.getFireworkStacks()[1] < min)
+			{
+				min = board.getFireworkStacks()[1];
+			}
+		}
+		int temp = min+1;
+		hands[turn].stream().filter(card -> card.isValueRevealed() && card.getCardValue() == temp).forEach(card -> card.addAge());
 
 		if (Log.debug)
 		{
@@ -106,10 +117,7 @@ public class Game
 			Log.log("Deck Size is: " + board.getDeckSize());
 			displayDebugPlayerhands(hands);
 		}
-		else
-		{
-			//getStackPiles();
-		}
+		getStackPiles();
 		if (turn < humanAmm)
 		{
 			humanModifier = 1;
@@ -214,7 +222,7 @@ public class Game
 							{
 								if (card.getCardValue() == charValue)
 								{
-									card.resetAge();
+									
 									card.revealValue();
 								}
 							}
@@ -245,7 +253,7 @@ public class Game
 						{
 							if (card.getCardSuit().getID() == id)
 							{
-								card.resetAge();
+
 								card.revealSuit();
 							}
 						}
