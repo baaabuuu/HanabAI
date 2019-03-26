@@ -99,7 +99,7 @@ public class PredictorAdvanced implements Predictor {
 		for (Card card : potentialCards)
 		{
 			suitCopies[card.getCardSuit().getID()]++;
-			numberCopies[card.getCardValue()]++;
+			numberCopies[card.getCardValue()-1]++;
 			if (isEverythingPlayable && card.getCardValue() != board.getFireworkStacks()[card.getCardSuit().getID()] + 1)
 			{
 				isEverythingPlayable = false;

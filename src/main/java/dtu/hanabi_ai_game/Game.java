@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import dtu.AI.AI;
 import dtu.AI.DFSStrategy;
+import dtu.AI.DFSTakeNBestNodes;
 import log.Log;
 
 public class Game
@@ -130,7 +131,7 @@ public class Game
 			Log.important("AI TURN - applying AI hooks for AI " + (turn - humanAmm+1));
 			while(true)
 			{
-				int MaxDepth = 6;
+				int MaxDepth = 4;
 				String action = AIList.get(turn - humanAmm).play(MaxDepth);
 				
 				Log.log("action string is: " + action);

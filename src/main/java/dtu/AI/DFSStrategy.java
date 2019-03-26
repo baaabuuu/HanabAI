@@ -21,8 +21,8 @@ public class DFSStrategy implements Strategy
 	private Board gameState;
 	private int id;
 	private int playerCount;
-	private Predictor predictor = new PredictorSimple();
-	private MoveGenerator generator = new MoveGeneratorSimple();
+	private Predictor predictor = new PredictorAdvanced();
+	private MoveGenerator generator = new MoveGeneratorAdvanced();
 	private BoardScorer scorer = new BoardScorerSimple();
 
 	public DFSStrategy(Board gameState, int id, int playerCount)

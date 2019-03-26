@@ -8,12 +8,12 @@ import dtu.hanabi_ai_game.Board;
 import log.Log;
 public class DFSTakeNBestNodes implements Strategy
 {
-	private int futureNodes = 8;
+	private int futureNodes = 7;
 	private Board gameState;
 	private int id;
 	private int playerCount;
-	private Predictor predictor = new PredictorSimple();
-	private MoveGenerator generator = new MoveGeneratorSimple();
+	private Predictor predictor = new PredictorAdvanced();
+	private MoveGenerator generator = new MoveGeneratorAdvanced();
 	private BoardScorer scorer = new BoardScorerSimple();
 
 	public DFSTakeNBestNodes(Board gameState, int id, int playerCount)
@@ -36,8 +36,6 @@ public class DFSTakeNBestNodes implements Strategy
 		generator.generateMoves(wrapper, maxDepth, currPlayer, id, predictor);
 		Log.important("Generated the following moves: ");
 		Log.log(moveWrapperPossibleMovesToString(wrapper));
-		
-		
 		
 		ArrayList<MoveWrapper> possibleMoves = wrapper.getPossibleMoves();
 		scoreEachWrapper(possibleMoves, currDepth, maxDepth);
