@@ -1,5 +1,7 @@
 package dtu.hanabi_ai_game;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A card class that each have a suit and a value.
@@ -10,6 +12,8 @@ public class Card
 {
 	private SuitEnum suit;
 	private int cardValue;
+	private List<SuitEnum> possibleSuites = new ArrayList<SuitEnum>();
+	private List<Integer> possibleValues = new ArrayList<Integer>();
 	
 	private boolean suitRevealed = false;
 	private boolean valueRevealed = false;

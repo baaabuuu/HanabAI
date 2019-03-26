@@ -1,23 +1,14 @@
 package dtu.AI;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.function.Predicate;
+
 
 import ai_actions.Action;
-import ai_actions.ActionDiscard;
-import ai_actions.ActionHint;
-import ai_actions.ActionPlay;
 import ai_actions.MoveWrapper;
 import dtu.hanabi_ai_game.Board;
-import dtu.hanabi_ai_game.Card;
-import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
 public class DFSTakeNBestNodes implements Strategy
 {
+	private int futureNodes = 8;
 	private Board gameState;
 	private int id;
 	private int playerCount;
@@ -51,7 +42,6 @@ public class DFSTakeNBestNodes implements Strategy
 		ArrayList<MoveWrapper> possibleMoves = wrapper.getPossibleMoves();
 		scoreEachWrapper(possibleMoves, currDepth, maxDepth);
 		
-		int futureNodes = 5;		
 		int maxPossibleMoves = (possibleMoves.size() > futureNodes) ? futureNodes : possibleMoves.size() - 1;
 		
 		ArrayList<MoveWrapper> bestMoves = getNbestBaseMoves(possibleMoves, maxPossibleMoves);
@@ -81,7 +71,6 @@ public class DFSTakeNBestNodes implements Strategy
 		ArrayList<MoveWrapper> possibleMoves = wrapper.getPossibleMoves();
 		scoreEachWrapper(possibleMoves, currDepth, maxDepth);
 		
-		int futureNodes = 5;		
 		int maxPossibleMoves = (possibleMoves.size() > futureNodes) ? futureNodes : possibleMoves.size() - 1;
 		
 		ArrayList<MoveWrapper> bestMoves = getNbestBaseMoves(possibleMoves, maxPossibleMoves);

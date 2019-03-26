@@ -61,6 +61,10 @@ public class BoardScorerSimple implements BoardScorer
 	public int getBoardScore(Board board, int origTurn, Action action, int currDepth, int maxDepth)
 	{
 		double score = 0;
+		if (board.getScore() == 25)
+		{
+			return Integer.MAX_VALUE-50000;
+		}
 		ArrayList<ArrayList<Card>> hands = new ArrayList<ArrayList<Card>>();
 		
 		for (ArrayList<Card> playerHand : board.getPlayerHands())
