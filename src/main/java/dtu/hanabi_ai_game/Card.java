@@ -15,6 +15,7 @@ public class Card
 	private List<SuitEnum> possibleSuites = new ArrayList<SuitEnum>();
 	private List<Integer> possibleValues = new ArrayList<Integer>();
 	
+	
 	private boolean suitRevealed = false;
 	private boolean valueRevealed = false;
 	/**
@@ -25,6 +26,14 @@ public class Card
 	public Card copyCard()
 	{
 		Card card = new Card(getCardSuit(), getCardValue());
+			for (SuitEnum possibleSuit : possibleSuites)
+			{
+				card.possibleSuites.add(possibleSuit);
+			}
+			for (Integer suitValue : possibleValues)
+			{
+				card.possibleValues.add(new Integer(suitValue));
+			}
 		card.suitRevealed = suitRevealed;
 		card.valueRevealed = valueRevealed;
 		return card;
