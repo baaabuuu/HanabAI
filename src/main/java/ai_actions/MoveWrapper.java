@@ -1,8 +1,7 @@
-package dtu.AI;
+package ai_actions;
 
 import java.util.ArrayList;
 
-import ai_actions.Action;
 import dtu.hanabi_ai_game.Board;
 
 public class MoveWrapper

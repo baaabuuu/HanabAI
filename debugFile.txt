@@ -3148,3 +3148,219 @@ player: 4 has ([36;1mB[0m)(1) ([33;1mY[0m)(1) ([37mW[0m)(3) ([32;1mG[0m)
 [21:25:51][AI.DFSStrategy][findBestPossiblePlay] Full Score:  6529
 [21:25:51][hanabi_ai_game.Game][takeTurn] action string is: H31
 [21:25:51][hanabi_ai_game.Game][takeTurn] turn is equal to: 2
+[10:04:40][hanabi_ai_game.Board][createNewBoard] THE SHUFFLE IS SEEDED!
+[10:04:40][hanabi_ai_game.Game][takeTurn] turn is equal to: 1
+[10:04:55][hanabi_ai_game.Game][takeTurn] Life count is: 3
+[10:04:55][hanabi_ai_game.Game][takeTurn] Token count is: 8
+[10:04:55][hanabi_ai_game.Game][takeTurn] Deck Size is: 34
+[10:04:55][hanabi_ai_game.Game][displayDebugPlayerhands] 
+player: 1 has ([32;1mG[0m)(4) ([36;1mB[0m)(2) ([1;31mR[0m)(2) ([36;1mB[0m)(3)
+player: 2 has ([1;31mR[0m)(3) ([36;1mB[0m)(1) ([36;1mB[0m)(4) ([1;31mR[0m)(4)
+player: 3 has ([36;1mB[0m)(2) ([1;31mR[0m)(5) ([33;1mY[0m)(3) ([33;1mY[0m)(2)
+player: 4 has ([32;1mG[0m)(2) ([37mW[0m)(2) ([32;1mG[0m)(3) ([36;1mB[0m)(1)
+[10:04:55][hanabi_ai_game.Game][getStackPiles] Top of each firework stack is:
+[10:04:55][hanabi_ai_game.Game][getStackPiles] W0 R0 B0 Y0 G0
+[10:04:55][hanabi_ai_game.Game][takeTurn] AI TURN - applying AI hooks for AI 1
+[10:04:55][AI.DFSStrategy][search] Starting a search for DFS AI 0
+[10:04:55][AI.DFSStrategy][getBestMove] Generated the following moves: 
+[10:04:55][AI.DFSStrategy][getBestMove] H1R, H13, H1B, H11, H14, H2B, H22, H2R, H25, H2Y, H23, H3G, H32, H3W, H33, H3B, H31
+[10:04:56][AI.DFSStrategy][getBestMove] Move 0
+[10:04:56][AI.DFSStrategy][getBestMove] Action:  H1R
+[10:04:56][AI.DFSStrategy][getBestMove] Score:  1180
+[10:04:56][AI.DFSStrategy][getBestMove] Move 1
+[10:04:56][AI.DFSStrategy][getBestMove] Action:  H13
+[10:04:56][AI.DFSStrategy][getBestMove] Score:  1152
+[10:04:56][AI.DFSStrategy][getBestMove] Move 2
+[10:04:56][AI.DFSStrategy][getBestMove] Action:  H1B
+[10:04:56][AI.DFSStrategy][getBestMove] Score:  1335
+[10:04:56][AI.DFSStrategy][getBestMove] Move 3
+[10:04:56][AI.DFSStrategy][getBestMove] Action:  H11
+[10:04:56][AI.DFSStrategy][getBestMove] Score:  2013
+[10:04:56][AI.DFSStrategy][getBestMove] Move 4
+[10:04:56][AI.DFSStrategy][getBestMove] Action:  H14
+[10:04:56][AI.DFSStrategy][getBestMove] Score:  1180
+[10:04:56][AI.DFSStrategy][getBestMove] Move 5
+[10:04:56][AI.DFSStrategy][getBestMove] Action:  H2B
+[10:04:56][AI.DFSStrategy][getBestMove] Score:  1152
+[10:04:56][AI.DFSStrategy][getBestMove] Move 6
+[10:04:56][AI.DFSStrategy][getBestMove] Action:  H22
+[10:04:56][AI.DFSStrategy][getBestMove] Score:  1180
+[10:04:56][AI.DFSStrategy][getBestMove] Move 7
+[10:04:56][AI.DFSStrategy][getBestMove] Action:  H2R
+[10:04:56][AI.DFSStrategy][getBestMove] Score:  1152
+[10:04:56][AI.DFSStrategy][getBestMove] Move 8
+[10:04:56][AI.DFSStrategy][getBestMove] Action:  H25
+[10:04:56][AI.DFSStrategy][getBestMove] Score:  1152
+[10:04:57][AI.DFSStrategy][getBestMove] Move 9
+[10:04:57][AI.DFSStrategy][getBestMove] Action:  H2Y
+[10:04:57][AI.DFSStrategy][getBestMove] Score:  1180
+[10:04:57][AI.DFSStrategy][getBestMove] Move 10
+[10:04:57][AI.DFSStrategy][getBestMove] Action:  H23
+[10:04:57][AI.DFSStrategy][getBestMove] Score:  1152
+[10:04:57][AI.DFSStrategy][getBestMove] Move 11
+[10:04:57][AI.DFSStrategy][getBestMove] Action:  H3G
+[10:04:57][AI.DFSStrategy][getBestMove] Score:  1180
+[10:04:57][AI.DFSStrategy][getBestMove] Move 12
+[10:04:57][AI.DFSStrategy][getBestMove] Action:  H32
+[10:04:57][AI.DFSStrategy][getBestMove] Score:  1180
+[10:04:57][AI.DFSStrategy][getBestMove] Move 13
+[10:04:57][AI.DFSStrategy][getBestMove] Action:  H3W
+[10:04:57][AI.DFSStrategy][getBestMove] Score:  1152
+[10:04:57][AI.DFSStrategy][getBestMove] Move 14
+[10:04:57][AI.DFSStrategy][getBestMove] Action:  H33
+[10:04:57][AI.DFSStrategy][getBestMove] Score:  1152
+[10:04:57][AI.DFSStrategy][getBestMove] Move 15
+[10:04:57][AI.DFSStrategy][getBestMove] Action:  H3B
+[10:04:57][AI.DFSStrategy][getBestMove] Score:  1184
+[10:04:57][AI.DFSStrategy][getBestMove] Move 16
+[10:04:57][AI.DFSStrategy][getBestMove] Action:  H31
+[10:04:57][AI.DFSStrategy][getBestMove] Score:  1305
+[10:04:57][hanabi_ai_game.Game][takeTurn] action string is: H11
+[10:04:57][hanabi_ai_game.Game][takeTurn] turn is equal to: 2
+[10:08:33][hanabi_ai_game.Game][takeTurn] Life count is: 3
+[10:08:33][hanabi_ai_game.Game][takeTurn] Token count is: 7
+[10:08:33][hanabi_ai_game.Game][takeTurn] Deck Size is: 34
+[10:08:33][hanabi_ai_game.Game][displayDebugPlayerhands] 
+player: 1 has ([32;1mG[0m)(4) ([36;1mB[0m)(2) ([1;31mR[0m)(2) ([36;1mB[0m)(3)
+player: 2 has ([1;31mR[0m)(3) ([36;1mB[0m)1 ([36;1mB[0m)(4) ([1;31mR[0m)(4)
+player: 3 has ([36;1mB[0m)(2) ([1;31mR[0m)(5) ([33;1mY[0m)(3) ([33;1mY[0m)(2)
+player: 4 has ([32;1mG[0m)(2) ([37mW[0m)(2) ([32;1mG[0m)(3) ([36;1mB[0m)(1)
+[10:08:33][hanabi_ai_game.Game][getStackPiles] Top of each firework stack is:
+[10:08:33][hanabi_ai_game.Game][getStackPiles] W0 R0 B0 Y0 G0
+[10:08:33][hanabi_ai_game.Game][takeTurn] AI TURN - applying AI hooks for AI 2
+[10:08:33][AI.DFSStrategy][search] Starting a search for DFS AI 1
+[10:08:33][AI.DFSStrategy][getBestMove] Generated the following moves: 
+[10:08:33][AI.DFSStrategy][getBestMove] H0G, H04, H0B, H02, H0R, H03, P1, D0, H2B, H22, H2R, H25, H2Y, H23, H3G, H32, H3W, H33, H3B, H31
+[10:08:33][AI.DFSStrategy][getBestMove] Move 0
+[10:08:33][AI.DFSStrategy][getBestMove] Action:  H0G
+[10:08:33][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:33][AI.DFSStrategy][getBestMove] Move 1
+[10:08:33][AI.DFSStrategy][getBestMove] Action:  H04
+[10:08:33][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:33][AI.DFSStrategy][getBestMove] Move 2
+[10:08:33][AI.DFSStrategy][getBestMove] Action:  H0B
+[10:08:33][AI.DFSStrategy][getBestMove] Score:  1742
+[10:08:33][AI.DFSStrategy][getBestMove] Move 3
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H02
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1742
+[10:08:34][AI.DFSStrategy][getBestMove] Move 4
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H0R
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:34][AI.DFSStrategy][getBestMove] Move 5
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H03
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:34][AI.DFSStrategy][getBestMove] Move 6
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  P1
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  3339
+[10:08:34][AI.DFSStrategy][getBestMove] Move 7
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  D0
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1686
+[10:08:34][AI.DFSStrategy][getBestMove] Move 8
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H2B
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:34][AI.DFSStrategy][getBestMove] Move 9
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H22
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1742
+[10:08:34][AI.DFSStrategy][getBestMove] Move 10
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H2R
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:34][AI.DFSStrategy][getBestMove] Move 11
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H25
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:34][AI.DFSStrategy][getBestMove] Move 12
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H2Y
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1742
+[10:08:34][AI.DFSStrategy][getBestMove] Move 13
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H23
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:34][AI.DFSStrategy][getBestMove] Move 14
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H3G
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1742
+[10:08:34][AI.DFSStrategy][getBestMove] Move 15
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H32
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1742
+[10:08:34][AI.DFSStrategy][getBestMove] Move 16
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H3W
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:34][AI.DFSStrategy][getBestMove] Move 17
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H33
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1714
+[10:08:34][AI.DFSStrategy][getBestMove] Move 18
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H3B
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1608
+[10:08:34][AI.DFSStrategy][getBestMove] Move 19
+[10:08:34][AI.DFSStrategy][getBestMove] Action:  H31
+[10:08:34][AI.DFSStrategy][getBestMove] Score:  1856
+[10:08:34][hanabi_ai_game.Game][takeTurn] action string is: P1
+[10:08:34][hanabi_ai_game.Game][takeAction] Top of the stack is: 0
+[10:08:34][hanabi_ai_game.Game][takeTurn] turn is equal to: 3
+[10:09:23][hanabi_ai_game.Game][takeTurn] Life count is: 3
+[10:09:23][hanabi_ai_game.Game][takeTurn] Token count is: 7
+[10:09:23][hanabi_ai_game.Game][takeTurn] Deck Size is: 33
+[10:09:23][hanabi_ai_game.Game][displayDebugPlayerhands] 
+player: 1 has ([32;1mG[0m)(4) ([36;1mB[0m)(2) ([1;31mR[0m)(2) ([36;1mB[0m)(3)
+player: 2 has ([1;31mR[0m)(3) ([36;1mB[0m)(4) ([1;31mR[0m)(4) ([32;1mG[0m)(4)
+player: 3 has ([36;1mB[0m)(2) ([1;31mR[0m)(5) ([33;1mY[0m)(3) ([33;1mY[0m)(2)
+player: 4 has ([32;1mG[0m)(2) ([37mW[0m)(2) ([32;1mG[0m)(3) ([36;1mB[0m)(1)
+[10:09:23][hanabi_ai_game.Game][getStackPiles] Top of each firework stack is:
+[10:09:23][hanabi_ai_game.Game][getStackPiles] W0 R0 B1 Y0 G0
+[10:09:23][hanabi_ai_game.Game][takeTurn] AI TURN - applying AI hooks for AI 3
+[10:09:23][AI.DFSStrategy][search] Starting a search for DFS AI 2
+[10:09:23][AI.DFSStrategy][getBestMove] Generated the following moves: 
+[10:09:23][AI.DFSStrategy][getBestMove] H0G, H04, H0B, H02, H0R, H03, H1R, H13, H1B, H14, H1G, D0, H3G, H32, H3W, H33, H3B, H31
+[10:09:23][AI.DFSStrategy][getBestMove] Move 0
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H0G
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2142
+[10:09:23][AI.DFSStrategy][getBestMove] Move 1
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H04
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2142
+[10:09:23][AI.DFSStrategy][getBestMove] Move 2
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H0B
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2414
+[10:09:23][AI.DFSStrategy][getBestMove] Move 3
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H02
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2414
+[10:09:23][AI.DFSStrategy][getBestMove] Move 4
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H0R
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2184
+[10:09:23][AI.DFSStrategy][getBestMove] Move 5
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H03
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2184
+[10:09:23][AI.DFSStrategy][getBestMove] Move 6
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H1R
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2198
+[10:09:23][AI.DFSStrategy][getBestMove] Move 7
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H13
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2156
+[10:09:23][AI.DFSStrategy][getBestMove] Move 8
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H1B
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2170
+[10:09:23][AI.DFSStrategy][getBestMove] Move 9
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H14
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2212
+[10:09:23][AI.DFSStrategy][getBestMove] Move 10
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H1G
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2170
+[10:09:23][AI.DFSStrategy][getBestMove] Move 11
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  D0
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2114
+[10:09:23][AI.DFSStrategy][getBestMove] Move 12
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H3G
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2184
+[10:09:23][AI.DFSStrategy][getBestMove] Move 13
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H32
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2184
+[10:09:23][AI.DFSStrategy][getBestMove] Move 14
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H3W
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2156
+[10:09:23][AI.DFSStrategy][getBestMove] Move 15
+[10:09:23][AI.DFSStrategy][getBestMove] Action:  H33
+[10:09:23][AI.DFSStrategy][getBestMove] Score:  2156
+[10:09:24][AI.DFSStrategy][getBestMove] Move 16
+[10:09:24][AI.DFSStrategy][getBestMove] Action:  H3B
+[10:09:24][AI.DFSStrategy][getBestMove] Score:  2142
+[10:09:24][AI.DFSStrategy][getBestMove] Move 17
+[10:09:24][AI.DFSStrategy][getBestMove] Action:  H31
+[10:09:24][AI.DFSStrategy][getBestMove] Score:  2142
+[10:09:24][hanabi_ai_game.Game][takeTurn] action string is: H0B
+[10:09:24][hanabi_ai_game.Game][takeTurn] turn is equal to: 4
