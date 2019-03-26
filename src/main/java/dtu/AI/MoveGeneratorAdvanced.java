@@ -33,7 +33,6 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 
 		Board board = wrapper.getBoard();
 		int playerCount = board.getPlayerHands().size();
-	
 
 		ArrayList<ArrayList<Card>> playerHands = board.getPlayerHands();
 		int scorePool[] = board.getFireworkStacks();
@@ -97,7 +96,7 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		{
 			int cardIndex = Character.getNumericValue(output.charAt(1));
 			Card card = board.getPlayerHand(turn).get(cardIndex);
-			if (card.isSuitRevealed() != true)
+			if (card.isSuitRevealed() != true || card.isValueRevealed() != true)
 			{
 				board.playCard(card, 5);
 			}
@@ -291,7 +290,7 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		for (int j = 0; j < hand.size(); j++)
 		{
 			Card cardConsider = hand.get(j);
-			for (int k = j; k < hand.size() - 1; k++)
+			for (int k = j+1; k < hand.size() - 1; k++)
 			{
 				Card otherCard = hand.get(k);
 				if (cardConsider.isSuitRevealed() && cardConsider.isValueRevealed() &&
@@ -310,16 +309,25 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 	{
 		for (int i = 0; i < hand.size(); i++)
 		{
-			Card cardConsider = hand.get(i);
+			Card card = hand.get(i);
 			//Check if value is possible to play
-			for (int k = 0; k < 5; k++)
+			if (!card.isSuitRevealed() && card.isValueRevealed())
 			{
-				if (!cardConsider.isSuitRevealed() && cardConsider.isValueRevealed() && cardConsider.getCardValue() < scorePool[k])
+				boolean check = true;
+				for (int k = 0; k < 5; k++)
+				{					
+					if (card.getCardValue() > scorePool[k])
+					{
+						check = false;
+					}
+				}
+				if (check)
 				{
 					return i;
 				}
 			}
-			if (cardConsider.isSuitRevealed() && !checkIfSuitIsPlayable(cardConsider.getCardSuit(), scorePool, board))
+			
+			if (card.isSuitRevealed() && !checkIfSuitIsPlayable(card.getCardSuit(), scorePool, board))
 			{
 				return i;
 			}

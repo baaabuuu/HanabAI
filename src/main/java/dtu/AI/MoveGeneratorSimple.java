@@ -287,7 +287,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		for (int j = 0; j < hand.size(); j++)
 		{
 			Card cardConsider = hand.get(j);
-			for (int k = j; k < hand.size() - 1; k++)
+			for (int k = j + 1; k < hand.size() - 1; k++)
 			{
 				Card otherCard = hand.get(k);
 				if (cardConsider.isSuitRevealed() && cardConsider.isValueRevealed() &&

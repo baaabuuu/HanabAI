@@ -98,7 +98,7 @@ public class Game
 
 		if (Log.debug)
 		{
-			getNextInput();
+			//getNextInput();
 			Log.log("Life count is: " + board.getLife());
 			Log.log("Token count is: " + board.getClueTokens());
 			Log.log("Deck Size is: " + board.getDeckSize());

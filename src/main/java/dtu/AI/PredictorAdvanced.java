@@ -95,14 +95,19 @@ public class PredictorAdvanced implements Predictor {
 		
 		int[] suitCopies = {0,0,0,0,0};
 		int[] numberCopies = {0,0,0,0,0};
-		boolean isEverythingPlayable = false;
+		boolean isEverythingPlayable = true;
+		int count = 0;
 		for (Card card : potentialCards)
 		{
 			suitCopies[card.getCardSuit().getID()]++;
 			numberCopies[card.getCardValue()-1]++;
 			if (isEverythingPlayable && card.getCardValue() != board.getFireworkStacks()[card.getCardSuit().getID()] + 1)
 			{
-				isEverythingPlayable = false;
+				if (board.getLife() > count)
+				{
+					isEverythingPlayable = false;
+				}
+				count++;
 			}
 		}
 		

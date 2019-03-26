@@ -37,6 +37,8 @@ public class Card
 	public Card copyCard()
 	{
 		Card card = new Card(getCardSuit(), getCardValue());
+		card.possibleSuites = new ArrayList<SuitEnum>();
+		card.possibleValues = new ArrayList<Integer>();
 		for (SuitEnum possibleSuit : possibleSuites)
 		{
 			card.possibleSuites.add(possibleSuit);

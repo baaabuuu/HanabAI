@@ -21,7 +21,7 @@ public class BoardScorerSimple implements BoardScorer
 	private int pointsForSecondLast1Numeric = 0;
 	private int pointsForLastCopy = 0;
 	
-	private int pointsForDiscardFullInfo = 80;
+	private int pointsForDiscardFullInfo = 60;
 	private int pointsForDiscardPartialInfo = 0;
 	private int pointsForDiscardNoInfo = 0;
 	
