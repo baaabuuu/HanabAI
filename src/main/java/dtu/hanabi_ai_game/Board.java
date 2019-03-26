@@ -27,6 +27,9 @@ public class Board
 	{
 		score++;
 	}
+	public ArrayList<Card> getDiscardPile(){
+		return discardPile;
+	}
 	
 	public int getScore()
 	{

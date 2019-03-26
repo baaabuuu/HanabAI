@@ -3,10 +3,12 @@ package dtu.AI;
 import dtu.hanabi_ai_game.*;
 
 public class Action {
-	private GameAction action;
-	private Card card;
-	private int target;
-	private int index;
+	public GameAction action =null;
+	private Card card=null;
+	public int target;
+	public int index;
+	public int value;
+	public SuitEnum suit=null;
 	
 	public Action(GameAction a, Card c, int player) {
 		this.action = a;
@@ -16,6 +18,17 @@ public class Action {
 	public Action(GameAction a, int index) {
 		this.action = a;
 		this.index = index;
+	}
+	
+	public Action(GameAction a, SuitEnum s,int player) {
+		this.action = a;
+		this.suit = s;
+		this.target = player;
+	}
+	public Action(GameAction a, int value,int player) {
+		this.action = a;
+		this.value = value;
+		this.target = player;
 	}
 
 	public String parse() {
