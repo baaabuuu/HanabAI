@@ -23,7 +23,7 @@ public class Game
 	{
 		humanAmm = 0;
 		aiAmm = AIcount;
-		playerCount = humanAmm + aiAmm;
+		playerCount = aiAmm;
 		board = new Board();
 		board.createNewBoard(playerCount);
 		for (int i = humanAmm; i < playerCount; i++)
