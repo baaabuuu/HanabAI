@@ -95,6 +95,8 @@ public class Game
 	{
 		Log.important("turn is equal to: " +( turn+1));
 		ArrayList<Card>[] hands = getPlayerHands();
+		//age each card.
+		hands[turn].forEach( card -> card.addAge());
 
 		if (Log.debug)
 		{
@@ -104,7 +106,10 @@ public class Game
 			Log.log("Deck Size is: " + board.getDeckSize());
 			displayDebugPlayerhands(hands);
 		}
-		getStackPiles();
+		else
+		{
+			//getStackPiles();
+		}
 		if (turn < humanAmm)
 		{
 			humanModifier = 1;
@@ -209,6 +214,7 @@ public class Game
 							{
 								if (card.getCardValue() == charValue)
 								{
+									card.resetAge();
 									card.revealValue();
 								}
 							}
@@ -239,6 +245,7 @@ public class Game
 						{
 							if (card.getCardSuit().getID() == id)
 							{
+								card.resetAge();
 								card.revealSuit();
 							}
 						}

@@ -18,6 +18,7 @@ public class Card
 	private boolean suitRevealed = false;
 	private boolean valueRevealed = false;
 	private boolean playable = false;
+	private int age = 0;
 	
 	public boolean isPlayable()
 	{
@@ -27,6 +28,11 @@ public class Card
 	public void setPlayable()
 	{
 		playable = true;
+	}
+	
+	public void resetAge()
+	{
+		age = 0;
 	}
 	
 	/**
@@ -39,6 +45,7 @@ public class Card
 		Card card = new Card(getCardSuit(), getCardValue());
 		card.possibleSuites = new ArrayList<SuitEnum>();
 		card.possibleValues = new ArrayList<Integer>();
+		card.age = age;
 		for (SuitEnum possibleSuit : possibleSuites)
 		{
 			card.possibleSuites.add(possibleSuit);
@@ -187,6 +194,16 @@ public class Card
 			sb.append("(" + cardValue + ")");
 		}
 		return sb.toString();
+	}
+	
+	public int getAge()
+	{
+		return age;
+	}
+	
+	public void addAge()
+	{
+		age++;
 	}
 	
 	/**

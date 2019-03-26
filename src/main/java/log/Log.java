@@ -27,29 +27,32 @@ public class Log {
 	
 	public static void log(String message)
 	{
+		String input = CallingClass.INSTANCE.getCallingClasses()[2].getName(); 
+		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+		input = input.substring(input.indexOf(".")+1);
+		String output ="[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "][" + input + "][" + methodName + "] " + message;
 		if (debug)
 		{
-			String input = CallingClass.INSTANCE.getCallingClasses()[2].getName(); 
-			String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-			input = input.substring(input.indexOf(".")+1);
-			String output ="[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "][" + input + "][" + methodName + "] " + message;
 			System.out.println(output);
-			writeToDebugFile(output);
 		}
+		writeToDebugFile(output);
+
 	}
 	
 	public static void important(String message)
 	{
+		//System.out.println("[" + new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss").format(new Date()) + "]: " + message);
+		String input = CallingClass.INSTANCE.getCallingClasses()[2].getName();
+		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+		input = input.substring(input.indexOf(".")+1);
+		String output ="[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "][" + input + "][" + methodName + "] " + message;
+
 		if (debug)
 		{
-			//System.out.println("[" + new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss").format(new Date()) + "]: " + message);
-			String input = CallingClass.INSTANCE.getCallingClasses()[2].getName();
-			String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-			input = input.substring(input.indexOf(".")+1);
-			String output ="[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "][" + input + "][" + methodName + "] " + message;
 			System.err.println(output);
-			writeToDebugFile(output);
 		}
+		writeToDebugFile(output);
+
 	}
 	
 	public static void writeToDebugFile(String input)

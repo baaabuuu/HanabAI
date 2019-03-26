@@ -13,7 +13,7 @@ public class BoardScorerSimple implements BoardScorer
 	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
 
 	private int pointsForInformation = 7;
-	private int pointsForLowValue = 25;
+	private int pointsForLowValue = 20;
 	private int pointsForLeftMostPlayable = 3;
 	private int pointsForPossibleFuture = 5;
 	private int pointsForFullInformation = 14;

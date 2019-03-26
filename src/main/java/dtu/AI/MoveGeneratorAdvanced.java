@@ -331,6 +331,10 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 			{
 				return i;
 			}
+			if (card.isValueRevealed() && card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] >= card.getCardValue())
+			{
+				return i;
+			}
 		}
 		return -1;
 	}

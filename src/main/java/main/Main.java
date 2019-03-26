@@ -9,8 +9,8 @@ public class Main {
 
 	public static void main(String[] args)
 	{
-		//runMultipleGames(20, 4);
-		runOneGame(3);
+		runMultipleGames(30, 3);
+		//runOneGame(3);
 	}
 	
 	public static void runMultipleGames( int gameCount, int AIcount)
@@ -22,6 +22,7 @@ public class Main {
 			Game game = new Game();
 			scores.add(game.startGameGetScore(AIcount));
 			stacks.add(game.getStacks());
+			System.out.println("Game " + i + " done");
 		}
 		
 		for (int i = 0; i < gameCount; i++)
