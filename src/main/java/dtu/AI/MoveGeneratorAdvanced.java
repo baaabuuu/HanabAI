@@ -76,7 +76,7 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		for (Action action : possibleActions)
 		{
 			Board newBoardState = board.copyState();
-			applyAction(action, newBoardState, currPlayer);
+			applyAction(action, newBoardState, currPlayer, origPlayer);
 			MoveWrapper newWrapper = new MoveWrapper(action, newBoardState);
 			wrapper.addMove(newWrapper);
 		}
@@ -89,7 +89,7 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 	 * @param board
 	 * @param turn
 	 */
-	private void applyAction(Action action, Board board, int turn) 
+	private void applyAction(Action action, Board board, int turn, int origTurn) 
 	{
 		String output = action.play();
 		if (output.charAt(0) == 'P')
@@ -110,7 +110,10 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		{
 			int cardIndex = Character.getNumericValue(output.charAt(1));
 			Card card = board.getPlayerHand(turn).get(cardIndex);
-			board.discardCard(card);
+			if (turn != origTurn)
+			{
+				board.discardCard(card);
+			}
 			board.addClueToken();
 		}
 		else

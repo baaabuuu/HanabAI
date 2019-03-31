@@ -90,7 +90,7 @@ public class BoardScorerSimple implements BoardScorer
 		score += pointsPerScore*board.getScore();
 		score += scoreBoardRows(board);
 		score += pointsForAction(action);
-		score *= depthModifier(currDepth, maxDepth);
+		//score *= depthModifier(currDepth, maxDepth);
 		return (int) score;
 	}
 	

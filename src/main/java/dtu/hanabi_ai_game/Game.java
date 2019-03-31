@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 import dtu.AI.AI;
 import dtu.AI.DFSStrategy;
-import dtu.AI.DFSTakeNBestNodes;
 import log.Log;
 
 public class Game
@@ -34,9 +33,13 @@ public class Game
 		int turn = 0;
 		while(true)
 		{
-			if (finished == 5 || board.getLife() == 0 || finalRound == turn)
+			if (finished == 5 || board.getLife() == 0 || finalRound == 0)
 			{
 				break;
+			}
+			if (finalRound > 0)
+			{
+				finalRound--;
 			}
 			takeTurn(turn);
 			turn = (turn+1 == playerCount) ? 0 : turn+1;
@@ -81,7 +84,7 @@ public class Game
 		int turn = 0;
 		while(true)
 		{
-			if (finished == 5 || board.getLife() == 0 || finalRound == turn)
+			if (finished == 5 || board.getLife() == 0 || finalRound == 0)
 			{
 				System.out.println("Game is now over... And the score is " + board.getScore());
 				break;
@@ -132,6 +135,10 @@ public class Game
 			while(true)
 			{
 				int MaxDepth = 4;
+				if (finalRound != -1 && MaxDepth > finalRound)
+				{
+					MaxDepth = finalRound+1;
+				}
 				String action = AIList.get(turn - humanAmm).play(MaxDepth);
 				
 				Log.log("action string is: " + action);
@@ -183,7 +190,7 @@ public class Game
 					board.drawCard(turn);
 					if (board.getDeckSize() == 0)
 					{
-						finalRound = turn;
+						finalRound = playerCount;
 					}
 				}
 				Log.log("Handling discard action for player " + (turn+1) + " they discarded " + card.getStringRepresentation());
@@ -292,7 +299,7 @@ public class Game
 					board.drawCard(turn);
 					if (board.getDeckSize() == 0)
 					{
-						finalRound = turn;
+						finalRound = playerCount;
 					}
 				}
 				return true;
