@@ -7,11 +7,17 @@ import ai_actions.Action;
 import dtu.hanabi_ai_game.Board;
 import dtu.hanabi_ai_game.Card;
 import dtu.hanabi_ai_game.SuitEnum;
-
+/**
+ * Used to score a board
+ * @author s160902
+ *
+ */
 public class BoardScorerSimple implements BoardScorer
 {
+	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
+
 	private int pointsForInformation = 7;
-	private int pointsForLowValue = 25;
+	private int pointsForLowValue = 125;
 	private int pointsForLeftMostPlayable = 3;
 	private int pointsForPossibleFuture = 5;
 	private int pointsForFullInformation = 14;
@@ -19,7 +25,7 @@ public class BoardScorerSimple implements BoardScorer
 	private int pointsForSecondLast1Numeric = 0;
 	private int pointsForLastCopy = 0;
 	
-	private int pointsForDiscardFullInfo = 80;
+	private int pointsForDiscardFullInfo = 60;
 	private int pointsForDiscardPartialInfo = 0;
 	private int pointsForDiscardNoInfo = 0;
 	
@@ -36,17 +42,37 @@ public class BoardScorerSimple implements BoardScorer
 	private	int actionPointsPlay = 300;
 	
 	
-	
+	/**
+	 * Used to reward earlier actions than later - turns out it scored badly.
+	 * @deprecated
+	 * @author s164166
+	 * @param currDepth
+	 * @param maxDepth
+	 * @return
+	 */
 	private Double depthModifier(int currDepth, int maxDepth)
 	{
 		return 1-(depthModifier*currDepth);
 	}
 
+	/**
+	 * Get points for the last copy
+	 * @author s164166
+	 * @param card
+	 * @param board
+	 * @return
+	 */
 	private int calculateLastCopyScore(Card card, Board board)
 	{
 		return pointsForLastCopy*(6-card.getCardValue());
 	}
 	
+	/**
+	 * Add points for few tokens
+	 * @author s160902
+	 * @param tokenCount
+	 * @return
+	 */
 	private int calculateHintTokenValue(int tokenCount)
 	{
 		if (tokenCount < 2)
@@ -57,10 +83,16 @@ public class BoardScorerSimple implements BoardScorer
 		return 0;
 	}
 	
+
+	//author s160902
 	@Override
 	public int getBoardScore(Board board, int origTurn, Action action, int currDepth, int maxDepth)
 	{
 		double score = 0;
+		if (board.getScore() == 25)
+		{
+			return Integer.MAX_VALUE-1000000;
+		}
 		ArrayList<ArrayList<Card>> hands = new ArrayList<ArrayList<Card>>();
 		
 		for (ArrayList<Card> playerHand : board.getPlayerHands())
@@ -84,10 +116,11 @@ public class BoardScorerSimple implements BoardScorer
 		score += pointsPerScore*board.getScore();
 		score += scoreBoardRows(board);
 		score += pointsForAction(action);
-		score *= depthModifier(currDepth, maxDepth);
+		//score *= depthModifier(currDepth, maxDepth);
 		return (int) score;
 	}
 	
+	//author s160902
 	private double pointsForDiscard(Card card, Action action) 
 	{
 		if (action.getActionType().equals("D"))
@@ -108,6 +141,12 @@ public class BoardScorerSimple implements BoardScorer
 		return 0;
 	}
 
+	/**
+	 * Give points based on the action
+	 * @author s164166
+	 * @param action
+	 * @return
+	 */
 	private int pointsForAction(Action action) {
 		if (action.getActionType().equals("D"))
 		{
@@ -124,6 +163,12 @@ public class BoardScorerSimple implements BoardScorer
 		return 0;
 	}
 	
+	/**
+	 * Score it for less points per 
+	 * @author s164166
+	 * @param board
+	 * @return
+	 */
 	private int scoreBoardRows(Board board)
 	{
 		int[] scorePool = board.getFireworkStacks();
@@ -183,7 +228,13 @@ public class BoardScorerSimple implements BoardScorer
 	}
 
 
-	
+	/**
+	 * Some cards are more limited, therefor cards become important
+	 * @author s164166
+	 * @param card
+	 * @param board
+	 * @return
+	 */
 	private int addPointsForImportance(Card card, Board board) {
 		int count = 0;
 		for (Card checkingCard : board.getPlayedCards())
@@ -209,27 +260,34 @@ public class BoardScorerSimple implements BoardScorer
 	}
 
 	/**
-	 * Check if its possible to play a card.
+	 * Check if a card can be played in the future possibly based on information
 	 * @author s164166
 	 * @param scorePool
 	 * @param card
 	 * @return
 	 */
 	private boolean checkPossiblePlay(int[] scorePool, Card card) {
-		if (!card.isSuitRevealed() && scorePool[5] == 0)
+		if (card.isValueRevealed())
 		{
-			for (int i = 0; i < 5; i++)
+			if (!card.isSuitRevealed())
 			{
-				if (scorePool[i]+1 != card.getCardValue())
+				for (int i = 0; i < 5; i++)
 				{
-					return false;
+					if (card.isCard(suits[i]) && scorePool[i] + 1 != card.getCardValue())
+					{
+						return false;
+					}
 				}
-
+				return true;
 			}
-			return true;
+			
+			if ( card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
+			{
+				return true;
+			}
+
 		}
-		
-		if (card.isSuitRevealed() && scorePool[card.getCardSuit().getID()] + 1 == card.getCardValue())
+		if (card.isPlayable())
 		{
 			return true;
 		}

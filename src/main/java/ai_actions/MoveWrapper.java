@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 import dtu.hanabi_ai_game.Board;
 
+/**
+ * A wrapper class for each node.
+ * Essentially each nod eis contained within here and points can be grabbed from it.
+ * @author s164166
+ *
+ */
 public class MoveWrapper
 {
 	private Action requiredAction;

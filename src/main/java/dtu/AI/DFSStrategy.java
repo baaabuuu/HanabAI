@@ -1,30 +1,32 @@
 package dtu.AI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.function.Predicate;
 
 import ai_actions.Action;
-import ai_actions.ActionDiscard;
-import ai_actions.ActionHint;
-import ai_actions.ActionPlay;
 import ai_actions.MoveWrapper;
 import dtu.hanabi_ai_game.Board;
-import dtu.hanabi_ai_game.Card;
-import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
+/**
+ * Generic DFS strategy with a maximum depth of N
+ * @author s164166
+ */
 public class DFSStrategy implements Strategy
 {
 	private Board gameState;
 	private int id;
 	private int playerCount;
-	private Predictor predictor = new PredictorSimple();
-	private MoveGenerator generator = new MoveGeneratorSimple();
+	private Predictor predictor = new PredictorAdvanced();
+	private MoveGenerator generator = new MoveGeneratorAdvanced();
 	private BoardScorer scorer = new BoardScorerSimple();
 
+	/**
+	 * Generic entrance
+	 * @author s164166
+	 * 
+	 * @param gameState
+	 * @param id
+	 * @param playerCount
+	 */
 	public DFSStrategy(Board gameState, int id, int playerCount)
 	{
 		this.gameState = gameState;
@@ -32,13 +34,26 @@ public class DFSStrategy implements Strategy
 		this.playerCount = playerCount;
 	}
 	
+	/**
+	 * Searching
+	 * @author s164166
+	 */
 	public String search(int depth)
 	{
-		Log.important("Starting a search for DFS AI " + id);
+		Log.important("Starting a search for DFS AI " + (id+1));
 		MoveWrapper wrapper = new MoveWrapper(null, gameState.copyState());
 		return getBestMove(wrapper, 0, depth, id).play();
 	}
 	
+	/**
+	 * Get the best move
+	 * @author s164166
+	 * @param wrapper
+	 * @param currDepth
+	 * @param maxDepth
+	 * @param currPlayer
+	 * @return
+	 */
 	private Action getBestMove(MoveWrapper wrapper, int currDepth, int maxDepth, int currPlayer)
 	{
 		
@@ -82,7 +97,16 @@ public class DFSStrategy implements Strategy
 		return bestAction;
 	}
 	
-	
+	/**
+	 * Score the future moves.
+	 * @author s164166
+	 * @param wrapper
+	 * @param currDepth
+	 * @param maxDepth
+	 * @param currPlayer
+	 * @param baseAction
+	 * @return
+	 */
 	private int scoreFutureMoves(MoveWrapper wrapper, int currDepth, int maxDepth, int currPlayer, Action baseAction)
 	{
 		if (currDepth == maxDepth) //No further - start grading
@@ -106,6 +130,12 @@ public class DFSStrategy implements Strategy
 		return Collections.max(scores)+scorer.getBoardScore(wrapper.getBoard(), id, baseAction, currDepth, maxDepth);
 	}
 	
+	/**
+	 * Writes the list to a string for testing purposes
+	 * @author s164166
+	 * @param wrapper
+	 * @return
+	 */
 	private String moveWrapperPossibleMovesToString(MoveWrapper wrapper)
 	{
 		ArrayList<MoveWrapper> wraps = wrapper.getPossibleMoves();

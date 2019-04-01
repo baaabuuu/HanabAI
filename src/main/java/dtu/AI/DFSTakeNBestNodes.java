@@ -1,30 +1,36 @@
 package dtu.AI;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.function.Predicate;
+
 
 import ai_actions.Action;
-import ai_actions.ActionDiscard;
-import ai_actions.ActionHint;
-import ai_actions.ActionPlay;
 import ai_actions.MoveWrapper;
 import dtu.hanabi_ai_game.Board;
-import dtu.hanabi_ai_game.Card;
-import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
+
+/**
+ * Currently unused due to a bug
+ * 
+ * @author s164166
+ *
+ */
 public class DFSTakeNBestNodes implements Strategy
 {
+	private int futureNodes = 7;
 	private Board gameState;
 	private int id;
 	private int playerCount;
-	private Predictor predictor = new PredictorSimple();
-	private MoveGenerator generator = new MoveGeneratorSimple();
+	private Predictor predictor = new PredictorAdvanced();
+	private MoveGenerator generator = new MoveGeneratorAdvanced();
 	private BoardScorer scorer = new BoardScorerSimple();
 
+	/**
+	 * 
+	 * @author s164166
+	 * 
+	 * @param gameState
+	 * @param id
+	 * @param playerCount
+	 */
 	public DFSTakeNBestNodes(Board gameState, int id, int playerCount)
 	{
 		this.gameState = gameState;
@@ -32,6 +38,9 @@ public class DFSTakeNBestNodes implements Strategy
 		this.playerCount = playerCount;
 	}
 	
+	/**
+	 * @author s164166
+	 */
 	public String search(int depth)
 	{
 		Log.important("Starting a search for DFS AI " + id);
@@ -39,19 +48,24 @@ public class DFSTakeNBestNodes implements Strategy
 		return findBestPossiblePlay(wrapper, 0, depth, id).play();
 	}
 	
-	
+	/**
+	 * 
+	 * @author s164166
+	 * @param wrapper
+	 * @param currDepth
+	 * @param maxDepth
+	 * @param currPlayer
+	 * @return
+	 */
 	private Action findBestPossiblePlay(MoveWrapper wrapper, int currDepth, int maxDepth, int currPlayer)
 	{
 		generator.generateMoves(wrapper, maxDepth, currPlayer, id, predictor);
 		Log.important("Generated the following moves: ");
 		Log.log(moveWrapperPossibleMovesToString(wrapper));
 		
-		
-		
 		ArrayList<MoveWrapper> possibleMoves = wrapper.getPossibleMoves();
 		scoreEachWrapper(possibleMoves, currDepth, maxDepth);
 		
-		int futureNodes = 5;		
 		int maxPossibleMoves = (possibleMoves.size() > futureNodes) ? futureNodes : possibleMoves.size() - 1;
 		
 		ArrayList<MoveWrapper> bestMoves = getNbestBaseMoves(possibleMoves, maxPossibleMoves);
@@ -75,13 +89,21 @@ public class DFSTakeNBestNodes implements Strategy
 		return getNbestFullMoves(bestMoves, 1).get(0).getAction();
 	}
 		
+	/**
+	 * Scoring mechanism for the board.
+	 * @author s164166
+	 * @param wrapper
+	 * @param currDepth
+	 * @param maxDepth
+	 * @param currPlayer
+	 * @return
+	 */
 	private int scorePossibleFutureMoves(MoveWrapper wrapper, int currDepth, int maxDepth, int currPlayer)
 	{
 		generator.generateMoves(wrapper, maxDepth, currPlayer, id, predictor);
 		ArrayList<MoveWrapper> possibleMoves = wrapper.getPossibleMoves();
 		scoreEachWrapper(possibleMoves, currDepth, maxDepth);
 		
-		int futureNodes = 5;		
 		int maxPossibleMoves = (possibleMoves.size() > futureNodes) ? futureNodes : possibleMoves.size() - 1;
 		
 		ArrayList<MoveWrapper> bestMoves = getNbestBaseMoves(possibleMoves, maxPossibleMoves);
@@ -108,9 +130,13 @@ public class DFSTakeNBestNodes implements Strategy
 		}		
 	}
 	
-	
-	
-	
+	/**
+	 * Get the N best moves from the list.	
+	 * @author s164166
+	 * @param moves
+	 * @param max
+	 * @return
+	 */
 	private ArrayList<MoveWrapper> getNbestFullMoves(ArrayList<MoveWrapper> moves, int max)
 	{		
 		ArrayList<MoveWrapper> bestMoves = new ArrayList<MoveWrapper>();
@@ -141,6 +167,13 @@ public class DFSTakeNBestNodes implements Strategy
 		return bestMoves;
 	}
 	
+	/**
+	 * Using base score is a little different, another method to get the best N.
+	 * @author s164166
+	 * @param moves
+	 * @param max
+	 * @return
+	 */
 	private ArrayList<MoveWrapper> getNbestBaseMoves(ArrayList<MoveWrapper> moves, int max)
 	{		
 		ArrayList<MoveWrapper> bestMoves = new ArrayList<MoveWrapper>();
@@ -171,6 +204,13 @@ public class DFSTakeNBestNodes implements Strategy
 		return bestMoves;
 	}
 	
+	/**
+	 * Score each move wrapper based on the boards score..
+	 * @author s164166
+	 * @param moves
+	 * @param currDepth
+	 * @param maxDepth
+	 */
 	void scoreEachWrapper(ArrayList<MoveWrapper> moves, int currDepth, int maxDepth)
 	{		
 		for (int i = 0; i < moves.size(); i++)
@@ -180,7 +220,12 @@ public class DFSTakeNBestNodes implements Strategy
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * @author s164166
+	 * @param wrapper
+	 * @return
+	 */
 	private String moveWrapperPossibleMovesToString(MoveWrapper wrapper)
 	{
 		ArrayList<MoveWrapper> wraps = wrapper.getPossibleMoves();
