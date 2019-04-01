@@ -6,7 +6,11 @@ import dtu.hanabi_ai_game.Board;
 import dtu.hanabi_ai_game.Card;
 import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
-
+/**
+ * An advancement on the first predictor.
+ * @author s164166
+ *
+ */
 public class PredictorAdvanced implements Predictor {
 
 	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
@@ -14,7 +18,7 @@ public class PredictorAdvanced implements Predictor {
 	
 	/**
 	 * Finds out which cards havent been played/ no information is given about.
-	 * @author s164166
+	 * @author s160902
 	 * @param playerhands
 	 * @param playerTurn - the one whose turn is.
 	 * @param origPlayer - the one that initiated the chain
@@ -53,6 +57,10 @@ public class PredictorAdvanced implements Predictor {
 	
 
 	@Override
+	/**
+	 * Generates the prediction, essentially an entrance function for the prediction.
+	 * @author s160902
+	 */
 	public ArrayList<Card> predict(ArrayList<ArrayList<Card>> hands, int turn, int origTurn, Board board) {
 		ArrayList<Card> attempt = new ArrayList<Card>();
 		for (Card card : hands.get(turn))
@@ -73,7 +81,7 @@ public class PredictorAdvanced implements Predictor {
 			}
 			//if we have less than or equal to 10, we can make a guess about the suits left.
 			if (suitsLeftInHand(attempt) && potentialCards.size() <= 10) {
-				guess = predictSuite(potentialCards, attempt);
+				guess = predictSuit(potentialCards, attempt);
 				if (guess)
 				{
 					break;
@@ -142,6 +150,13 @@ public class PredictorAdvanced implements Predictor {
 		return attempt;
 	}
 
+	/**
+	 * Possibly make a prediction about the values of each card.
+	 * @author s164166
+	 * @param potentialCards
+	 * @param attempt
+	 * @return
+	 */
 	private boolean predictValue(ArrayList<Card> potentialCards, ArrayList<Card> attempt) {
 		int guessNumber = 0;
 		for (Card cardGuess : potentialCards) {
@@ -164,7 +179,14 @@ public class PredictorAdvanced implements Predictor {
 		return true;
 	}
 
-	private boolean predictSuite(ArrayList<Card> potentialCards, ArrayList<Card> attempt) {
+	/**
+	 * Predict the suit of a card
+	 * @author s164166
+	 * @param potentialCards
+	 * @param attempt
+	 * @return
+	 */
+	private boolean predictSuit(ArrayList<Card> potentialCards, ArrayList<Card> attempt) {
 		int guessSuit = -1;
 		for (Card cardGuess : potentialCards) {
 			if (guessSuit == -1) {
@@ -189,7 +211,7 @@ public class PredictorAdvanced implements Predictor {
 
 	/**
 	 * Checks whether any card in a hand has not had its suit revealed
-	 * @author s164166
+	 * @author s160902
 	 * @param hand
 	 * @return
 	 */
@@ -200,7 +222,7 @@ public class PredictorAdvanced implements Predictor {
 	
 	/**
 	 * Checks whether any card in a hand has not had its value revealed
-	 * @author s164166
+	 * @author s160902
 	 * @param hand
 	 * @return
 	 */
@@ -212,7 +234,7 @@ public class PredictorAdvanced implements Predictor {
 	
 	/**
 	 * Guess about the cards suit or value if the suit or the value has no information, but there is information about the other.
-	 * @author s164166
+	 * @author s160902
 	 * @param card
 	 * @param potentialCards
 	 * @return
@@ -228,7 +250,7 @@ public class PredictorAdvanced implements Predictor {
 
 	/**
 	 * Guess about the cards suit
-	 * @author s164166
+	 * @author s160902
 	 * @param card
 	 * @param potentialCards
 	 * @return
@@ -252,7 +274,7 @@ public class PredictorAdvanced implements Predictor {
 
 	/**
 	 * Guess about the cards number
-	 * @author s164166
+	 * @author s160902
 	 * @param card
 	 * @param potentialCards
 	 * @return

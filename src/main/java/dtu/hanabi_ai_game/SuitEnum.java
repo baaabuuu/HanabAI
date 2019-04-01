@@ -36,6 +36,12 @@ public enum SuitEnum {
 	public int getID() { return id;};
 	public String getSuitChar() {return this.suitChar;}
 	
+	/**
+	 * A quick way to generate enums - by using the fromInteger instead of values and valueof you do O(n) - this makes it O(1)
+	 * @author s164166
+	 * @param x
+	 * @return
+	 */
 	public static SuitEnum fromInteger(int x) 
 	{
         switch(x) {

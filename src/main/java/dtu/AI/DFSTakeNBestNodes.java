@@ -6,6 +6,13 @@ import ai_actions.Action;
 import ai_actions.MoveWrapper;
 import dtu.hanabi_ai_game.Board;
 import log.Log;
+
+/**
+ * Currently unused.
+ * 
+ * @author s164166
+ *
+ */
 public class DFSTakeNBestNodes implements Strategy
 {
 	private int futureNodes = 7;
@@ -16,6 +23,14 @@ public class DFSTakeNBestNodes implements Strategy
 	private MoveGenerator generator = new MoveGeneratorAdvanced();
 	private BoardScorer scorer = new BoardScorerSimple();
 
+	/**
+	 * 
+	 * @author s164166
+	 * 
+	 * @param gameState
+	 * @param id
+	 * @param playerCount
+	 */
 	public DFSTakeNBestNodes(Board gameState, int id, int playerCount)
 	{
 		this.gameState = gameState;
@@ -23,6 +38,9 @@ public class DFSTakeNBestNodes implements Strategy
 		this.playerCount = playerCount;
 	}
 	
+	/**
+	 * @author s164166
+	 */
 	public String search(int depth)
 	{
 		Log.important("Starting a search for DFS AI " + id);
@@ -30,7 +48,15 @@ public class DFSTakeNBestNodes implements Strategy
 		return findBestPossiblePlay(wrapper, 0, depth, id).play();
 	}
 	
-	
+	/**
+	 * 
+	 * @author s164166
+	 * @param wrapper
+	 * @param currDepth
+	 * @param maxDepth
+	 * @param currPlayer
+	 * @return
+	 */
 	private Action findBestPossiblePlay(MoveWrapper wrapper, int currDepth, int maxDepth, int currPlayer)
 	{
 		generator.generateMoves(wrapper, maxDepth, currPlayer, id, predictor);

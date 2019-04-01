@@ -14,9 +14,13 @@ import dtu.hanabi_ai_game.Card;
 import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
 
+/**
+ * A simple version of the move generator and the first iteration
+ * @author s164166
+ *
+ */
 public class MoveGeneratorSimple implements MoveGenerator {
 
-	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
 			
 	@Override
 	/**
@@ -193,6 +197,14 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		return playset;
 	}
 
+	/**
+	 * Finds best discard
+	 * @author s164166
+	 * @param hand
+	 * @param scorePool
+	 * @param board
+	 * @return
+	 */
 	private Action bestDiscard(ArrayList<Card> hand, int[] scorePool, Board board)
 	{
 
@@ -221,6 +233,13 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		return new ActionDiscard(discardTarget);
 	}
 
+	/**
+	 * Generate the hints that can be given.
+	 * @author s164166
+	 * @param hand
+	 * @param playerID
+	 * @return
+	 */
 	private Collection<? extends Action> generateHints(ArrayList<Card> hand, int playerID)
 	{
 		ArrayList<Action> collection = new ArrayList<Action>();
@@ -247,6 +266,12 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		return collection;
 	}
 
+	/**
+	 * If no information about a suit discard
+	 * @author s164166
+	 * @param hand
+	 * @return
+	 */
 	private int noSuit(ArrayList<Card> hand)
 	{
 		for (int j = 0; j < hand.size(); j++)
@@ -260,6 +285,12 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		return -1;
 	}
 	
+	/**
+	 * If no information about the value discard
+	 * @author s164166
+	 * @param hand
+	 * @return
+	 */
 	private int noValue(ArrayList<Card> hand)
 	{
 		for (int j = 0; j < hand.size(); j++)
@@ -273,6 +304,12 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		return -1;
 	}
 	
+	/**
+	 * If no information at all about a card, discard it.
+	 * @author s164166
+	 * @param hand
+	 * @return
+	 */
 	private int noInformation(ArrayList<Card> hand) {
 		for (int j = 0; j < hand.size(); j++) {
 			Card cardConsider = hand.get(j);
@@ -283,6 +320,13 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		return -1;
 	}
 
+	
+	/**
+	 * If there is a duplicate remove it
+	 * @author s164166
+	 * @param hand
+	 * @return
+	 */
 	private int removeDuplicate(ArrayList<Card> hand) {
 		for (int j = 0; j < hand.size(); j++)
 		{
@@ -302,6 +346,14 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		return -1;
 	}
 
+	/**
+	 * If any card is unplayable discard it.
+	 * @author s164166
+	 * @param hand
+	 * @param scorePool
+	 * @param board
+	 * @return
+	 */
 	public int checkIfHandContainsUnplayableCard(ArrayList<Card> hand, int[] scorePool, Board board)
 	{
 		for (int i = 0; i < hand.size(); i++)

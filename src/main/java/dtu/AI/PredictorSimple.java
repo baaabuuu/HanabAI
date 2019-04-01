@@ -93,6 +93,13 @@ public class PredictorSimple implements Predictor {
 		return attempt;
 	}
 
+	/**
+	 * Predict the value of a card.
+	 * @author s160902
+	 * @param potentialCards
+	 * @param attempt
+	 * @return
+	 */
 	private boolean predictValue(ArrayList<Card> potentialCards, ArrayList<Card> attempt) {
 		int guessNumber = 0;
 		for (Card cardGuess : potentialCards) {
@@ -115,6 +122,13 @@ public class PredictorSimple implements Predictor {
 		return true;
 	}
 
+	/**
+	 * Predict the suit
+	 * @author s164166
+	 * @param potentialCards
+	 * @param attempt
+	 * @return
+	 */
 	private boolean predictSuite(ArrayList<Card> potentialCards, ArrayList<Card> attempt) {
 		int guessSuit = -1;
 		for (Card cardGuess : potentialCards) {
@@ -140,7 +154,7 @@ public class PredictorSimple implements Predictor {
 
 	/**
 	 * Checks whether any card in a hand has not had its suit revealed
-	 * @author s164166
+	 * @author s160902
 	 * @param hand
 	 * @return
 	 */
@@ -151,7 +165,7 @@ public class PredictorSimple implements Predictor {
 	
 	/**
 	 * Checks whether any card in a hand has not had its value revealed
-	 * @author s164166
+	 * @author s160902
 	 * @param hand
 	 * @return
 	 */
@@ -163,7 +177,7 @@ public class PredictorSimple implements Predictor {
 	
 	/**
 	 * Guess about the cards suit or value if the suit or the value has no information, but there is information about the other.
-	 * @author s164166
+	 * @author s160902
 	 * @param card
 	 * @param potentialCards
 	 * @return
@@ -179,7 +193,7 @@ public class PredictorSimple implements Predictor {
 
 	/**
 	 * Guess about the cards suit
-	 * @author s164166
+	 * @author s160902
 	 * @param card
 	 * @param potentialCards
 	 * @return
@@ -203,7 +217,7 @@ public class PredictorSimple implements Predictor {
 
 	/**
 	 * Guess about the cards number
-	 * @author s164166
+	 * @author s160902
 	 * @param card
 	 * @param potentialCards
 	 * @return

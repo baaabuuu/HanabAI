@@ -14,6 +14,11 @@ import dtu.hanabi_ai_game.Card;
 import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
 
+/**
+ * A likely improvement based on MoveGenerator
+ * @author s164166
+ *
+ */
 public class MoveGeneratorAdvanced implements MoveGenerator {
 
 	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
@@ -185,6 +190,13 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 	}
 
 
+	/**
+	 * Generate teh possible plays and add them to the hand.
+	 * @author s164166
+	 * @param hand
+	 * @param scorePool
+	 * @return
+	 */
 	private Collection<? extends Action> generatePossiblePlays(ArrayList<Card> hand, int[] scorePool) 
 	{
 		HashSet<Action> playset = new HashSet<Action>();
@@ -199,6 +211,14 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		return playset;
 	}
 
+	/**
+	 * Same as in Movegenerator - but with bugfixes
+	 * @author s160902
+	 * @param hand
+	 * @param scorePool
+	 * @param board
+	 * @return
+	 */
 	private Action bestDiscard(ArrayList<Card> hand, int[] scorePool, Board board)
 	{
 
@@ -227,6 +247,13 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		return new ActionDiscard(discardTarget);
 	}
 
+	/**
+	 * Generate the hints given
+	 * @author s164166
+	 * @param hand
+	 * @param playerID
+	 * @return
+	 */
 	private Collection<? extends Action> generateHints(ArrayList<Card> hand, int playerID)
 	{
 		ArrayList<Action> collection = new ArrayList<Action>();
@@ -252,7 +279,13 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		}
 		return collection;
 	}
-
+	
+	/**
+	 * Check if a card in hand hasnt had its suit revealed, if so its a discard target
+	 * @author s164166
+	 * @param hand
+	 * @return
+	 */
 	private int noSuit(ArrayList<Card> hand)
 	{
 		for (int j = 0; j < hand.size(); j++)
@@ -266,6 +299,12 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		return -1;
 	}
 	
+	/**
+	 * Check if a cards value is revealed, if not its the discard target.
+	 * @author s164166
+	 * @param hand
+	 * @return
+	 */
 	private int noValue(ArrayList<Card> hand)
 	{
 		for (int j = 0; j < hand.size(); j++)
@@ -279,6 +318,12 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		return -1;
 	}
 	
+	/**
+	 * If no information exists about a card, discard it.
+	 * @author s164166
+	 * @param hand
+	 * @return
+	 */
 	private int noInformation(ArrayList<Card> hand) {
 		for (int j = 0; j < hand.size(); j++) {
 			Card cardConsider = hand.get(j);
@@ -289,6 +334,12 @@ public class MoveGeneratorAdvanced implements MoveGenerator {
 		return -1;
 	}
 
+	/**
+	 * If a card is a duplicate, remove it.
+	 * @author s164166
+	 * @param hand
+	 * @return
+	 */
 	private int removeDuplicate(ArrayList<Card> hand) {
 		for (int j = 0; j < hand.size(); j++)
 		{
