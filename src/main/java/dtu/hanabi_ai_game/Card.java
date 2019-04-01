@@ -26,6 +26,7 @@ public class Card
 		return card;
 	}
 	
+	
 	/**
 	 * Reveals the suit of the card.
 	 * @author s164166
@@ -147,6 +148,18 @@ public class Card
 			sb.append("?");
 		}
 		return sb.toString();
+	}
+
+
+	public void hideSuit() {
+		// TODO Auto-generated method stub
+		suitRevealed = false;
+	}
+
+
+	public void hideValue() {
+		// TODO Auto-generated method stub
+		valueRevealed = false;
 	}
 	
 

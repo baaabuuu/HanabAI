@@ -1,11 +1,13 @@
 package dtu.hanabi_ai_game;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import dtu.AI.AI;
 import dtu.AI.DFSStrategy;
 import log.Log;
+import monte_carlo.MonteCarloTreeSearch;
 
 public class Game
 {
@@ -16,9 +18,28 @@ public class Game
 	int finalRound = -1;
 	int finished = 0;
 	int humanModifier = 0;
+	int turn = 0;
 	Scanner scanner = new Scanner(System.in);
 	private ArrayList<AI> AIList = new ArrayList<AI>();
 	
+	public Game(Game game) {
+		this.board = game.board.copyState();
+		this.humanAmm = game.humanAmm;
+		this.playerCount = game.playerCount;
+		this.durationBetweenTurns = game.durationBetweenTurns;
+		this.suitCount = game.suitCount;
+		this.finalRound = game.finalRound;
+		this.finished = game.finished;
+		this.humanModifier = game.humanModifier;
+		this.turn = game.turn;
+		
+		
+	}
+
+	public Game() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int startGameGetScore(int AIcount)
 	{
 		humanAmm = 0;
@@ -43,6 +64,34 @@ public class Game
 		return board.getScore();
 	}
 	
+	public void startRolloutGame(Board board, int noOfPlayers, int finished, int turn, int finalRound){
+		playerCount = noOfPlayers;
+		humanAmm = 0;
+		aiAmm = playerCount;
+		this.board = board;
+		this.finished = finished;
+		this.turn = turn;
+		this.finalRound = finalRound;
+				
+	}
+	
+	public Boolean rolloutTakeAction(String action){
+		takeAction(action, turn);
+		turn = (turn + 1) % playerCount;
+		
+		return finished == 5 || board.getLife() == 0 || finalRound == turn;
+	}
+	
+	//Returns -1 if the game is going, and the score if it is over
+	public int isGameOver() {
+		return (finished == 5 || board.getLife() == 0 || finalRound == turn) ? board.getScore() : -1;
+	}
+	
+	public void randomizeHand(int playerNo) {
+		// TODO Auto-generated method stub
+		board.randomizHand(playerNo);
+		
+	}
 	
 	public void startGame()
 	{
@@ -77,12 +126,12 @@ public class Game
 		{
 			AIList.add(new AI(new DFSStrategy(board, i, playerCount)));
 		}
-		int turn = 0;
 		while(true)
 		{
 			if (finished == 5 || board.getLife() == 0 || finalRound == turn)
 			{
 				System.out.println("Game is now over... And the score is " + board.getScore());
+
 				break;
 			}
 			takeTurn(turn);
@@ -130,9 +179,15 @@ public class Game
 			Log.important("AI TURN - applying AI hooks for AI " + (turn - humanAmm+1));
 			while(true)
 			{
-				int MaxDepth = playerCount;
-				String action = AIList.get(turn - humanAmm).play(MaxDepth);
+				//int MaxDepth = playerCount;
+				MonteCarloTreeSearch ai = new MonteCarloTreeSearch();
 				
+				boolean tempbool = Log.debug;
+				
+				Log.debug(false);
+				String action = ai.findNextMove(board, turn, this, 2000, 500, playerCount);
+				if(tempbool)
+					Log.debug(true);
 				Log.log("action string is: " + action);
 				if (takeAction(action, turn))
 				{
@@ -408,5 +463,29 @@ public class Game
 	{
 		return board.getFireworkStacks();
 	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public List<Game> getAllPermutationsOfCard(int playerNo, int card) {
+		Board boardHolder =  board.copyState();
+		List<Game> games = new ArrayList<>();
+		//Gets all the possible board states
+		for(Board tempBoard : board.getAllPermutationsOfCard(playerNo, card)){
+			//Copies this game with the board changed
+			board = tempBoard;
+			games.add(new Game(this));
+		}
+		
+		//Resets the board
+		board = boardHolder;
+		
+		return games;
+	}
+
+	
+
+
 
 }

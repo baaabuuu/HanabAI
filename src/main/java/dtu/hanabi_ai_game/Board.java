@@ -1,7 +1,9 @@
 package dtu.hanabi_ai_game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import log.Log;
@@ -25,6 +27,95 @@ public class Board
 
 	private int[] cardNumbers;
 	private SuitEnum[] suits;
+	
+	public void randomizHand(int playerNo) {
+		//Make a list with all possible hands in the playerhand
+		ArrayList<Card> playerHand = playerHands.get(playerNo);
+		ArrayList<Card> allPossibleCards = deck;
+		allPossibleCards.addAll(playerHand);
+		
+		
+	
+		//Find out what information is given about the hand
+		boolean[][] cardsNeeded = new boolean[11][playerHand.size()]; // Frist five values are values, therafter are suits, followed by randoom
+		for(int i = 0; i < playerHand.size(); i++){
+			Card card = playerHand.get(i);
+			if(card.isSuitRevealed() && card.isValueRevealed()) {
+				allPossibleCards.remove(card); //Removes the card from possible values
+			} else if(card.isSuitRevealed() ){
+				playerHand.get(i).hideSuit();
+				cardsNeeded[card.getCardSuit().getID()+5][i] = true;
+			}else if(card.isValueRevealed()){
+				playerHand.get(i).hideValue();
+				cardsNeeded[card.getCardValue()-1][i] = true;
+			} else {
+				cardsNeeded[10][i] = true;
+			}
+		}
+		
+		boolean cardNotFound = false;
+		Card[] chosenCards = new Card[playerHand.size()];
+		//HACK Very poorly optimized. Can in theory go forever
+		do{
+			cardNotFound = false;
+			//Shuffle the cards
+			Collections.shuffle(allPossibleCards);
+		
+			
+			//Goes through all possible missing cards
+			for(int j = 0; j < 11; j++){
+				for(int i = 0; i < playerHand.size(); i++){
+					//If the current card is missing find a card in the possible cards
+					if(cardsNeeded[j][i]){
+						cardNotFound = true;
+						for(int k = 0; k < allPossibleCards.size(); k++){
+							Card card = allPossibleCards.get(k);
+							if(j < 5 && card.getCardValue() == (j+1)){
+								cardNotFound = false;
+								card.revealValue();
+								chosenCards[i] = card;
+								allPossibleCards.remove(card);
+								break;
+							} else if (j < 10 && card.getCardSuit().getID() == j-5){
+								cardNotFound = false;
+								card.revealValue();
+								chosenCards[i] = card;
+								allPossibleCards.remove(card);
+								break;
+							} else if (j == 10){
+								cardNotFound = false;
+								chosenCards[i] = card;
+								allPossibleCards.remove(card);
+								break;
+							}
+						}
+						if(cardNotFound){		
+							break;
+						}
+					}
+				}
+				if(cardNotFound){
+					break;
+				}
+			}
+			if(cardNotFound){
+				for(int i = 0; i < playerHand.size(); i++){
+					if(chosenCards[i] != null){
+						allPossibleCards.add(chosenCards[i]);
+						chosenCards[i] = null;
+					}
+				}
+			}
+		}while(cardNotFound);
+		
+		for(int i = 0; i < playerHand.size(); i++){
+			if(chosenCards[i] != null){
+				playerHand.set(i, chosenCards[i]);
+			}
+		}
+		
+		deck = allPossibleCards;
+	}
 	
 	public void addPoint()
 	{
@@ -300,5 +391,177 @@ public class Board
 	{
 		return playerHands;
 	}
+
+	public List<Board> getAllPermutationsOfCard(int playerNo, int cardIndex) {
+		Card cardToCheck = playerHands.get(playerNo).get(cardIndex);
+		List<Board> boards = new ArrayList<>();
+		
+		if(cardToCheck.isSuitRevealed() && cardToCheck.isValueRevealed()){
+			
+			for(int i = 0; i < deck.size(); i++){
+				if(cardToCheck.getCardSuit() == deck.get(i).getCardSuit()){
+					boards.add(this.copyState());
+				}
+			}
+			for(int i = 0; i < playerHands.get(playerNo).size(); i++){
+				if(cardToCheck.getCardSuit() == playerHands.get(playerNo).get(i).getCardSuit()){
+					boards.add(this.copyState());
+				}
+			}
+		} else if(cardToCheck.isSuitRevealed()){
+			boards.add(this.copyState());
+			ArrayList<Card> deckHolder = new ArrayList<>(deck);
+			//Sets the card to be any card currently in the 
+			for(int i = 0; i < deck.size(); i++){
+				//Gets current card
+				
+				Card tempCard = deck.get(i);
+				if(tempCard.getCardValue() == cardToCheck.getCardValue()){
+					tempCard.revealSuit();
+					cardToCheck.hideSuit();
+					deck.set(i, playerHands.get(playerNo).get(cardIndex).copyCard());
+					playerHands.get(playerNo).set(cardIndex, tempCard.copyCard());
+					Collections.shuffle(deck);
+					boards.add(this.copyState());
+					
+					deck = deckHolder;	
+				}
+				
+			}
+			
+			for(int i = 0; i < playerHands.get(playerNo).size(); i++){
+				if(i!= cardIndex && playerHands.get(playerNo).get(i).getCardValue() == cardToCheck.getCardValue()){
+					//HACK. Dosen't find any combination of cards in hand
+					int tempCard = findMatchCardInDeck(playerHands.get(playerNo).get(i));
+					if(tempCard != -1){
+						Card cardFromDeck = deck.get(tempCard).copyCard();
+						Card cardFromHand = playerHands.get(playerNo).get(i);
+						cardFromHand.revealSuit();
+						cardFromHand.hideValue();
+						deck.set(tempCard, playerHands.get(playerNo).get(cardIndex).copyCard());
+						playerHands.get(playerNo).set(cardIndex, cardFromHand);
+						playerHands.get(playerNo).set(i, cardFromDeck);
+						
+						Collections.shuffle(deck);
+						boards.add(this.copyState());
+					}
+					
+				}
+			}
+		} else if(cardToCheck.isValueRevealed()){
+			
+			boards.add(this.copyState());
+			ArrayList<Card> deckHolder = new ArrayList<>(deck);
+			//Sets the card to be any card currently in the 
+			for(int i = 0; i < deck.size(); i++){
+				//Gets current card
+				
+				Card tempCard = deck.get(i);
+				if(tempCard.getCardValue() == cardToCheck.getCardValue()){
+					tempCard.revealValue();
+					cardToCheck.hideValue();
+					deck.set(i, playerHands.get(playerNo).get(cardIndex).copyCard());
+					playerHands.get(playerNo).set(cardIndex, tempCard.copyCard());
+					Collections.shuffle(deck);
+					boards.add(this.copyState());
+					
+					deck = deckHolder;	
+				}
+				
+			}
+			
+			for(int i = 0; i < playerHands.get(playerNo).size(); i++){
+				if(i!= cardIndex && playerHands.get(playerNo).get(i).getCardValue() == cardToCheck.getCardValue()){
+					//HACK. Dosen't find any combination of cards in hand
+					int tempCard = findMatchCardInDeck(playerHands.get(playerNo).get(i));
+					if(tempCard != -1){
+						Card cardFromDeck = deck.get(tempCard).copyCard();
+						Card cardFromHand = playerHands.get(playerNo).get(i);
+						cardFromHand.hideSuit();
+						cardFromHand.revealValue();
+						deck.set(tempCard, playerHands.get(playerNo).get(cardIndex).copyCard());
+						playerHands.get(playerNo).set(cardIndex, cardFromHand);
+						playerHands.get(playerNo).set(i, cardFromDeck);
+						
+						Collections.shuffle(deck);
+						boards.add(this.copyState());
+					}
+					
+				}
+			}
+			
+		} else {
+			boards.add(this.copyState());
+			ArrayList<Card> deckHolder = new ArrayList<>(deck);
+			//Sets the card to be any card currently in the 
+			for(int i = 0; i < deck.size(); i++){
+				//Gets current card
+				Card tempCard = deck.get(i).copyCard();
+				deck.set(i, playerHands.get(playerNo).get(cardIndex).copyCard());
+				playerHands.get(playerNo).set(cardIndex, tempCard);
+				Collections.shuffle(deck);
+				boards.add(this.copyState());
+				
+				deck = deckHolder;
+			}
+			
+			for(int i = 0; i < playerHands.get(playerNo).size(); i++){
+				if(i!= cardIndex){
+					//HACK. Dosen't find any combination of cards in hand
+					int tempCard = findMatchCardInDeck(playerHands.get(playerNo).get(i));
+					if(tempCard != -1){
+						Card cardFromDeck = deck.get(tempCard).copyCard();
+						Card cardFromHand = playerHands.get(playerNo).get(i);
+						cardFromHand.hideSuit();
+						cardFromHand.hideValue();
+						deck.set(tempCard, playerHands.get(playerNo).get(cardIndex).copyCard());
+						playerHands.get(playerNo).set(cardIndex, cardFromHand);
+						playerHands.get(playerNo).set(i, cardFromDeck);
+						
+						Collections.shuffle(deck);
+						boards.add(this.copyState());
+					}
+					
+				}
+			}
+			
+			
+		}
+		
+		
+		return boards;
+	}
+
+	private int findMatchCardInDeck(Card card) {
+
+		for(int i = 0; i < deck.size(); i++){
+			//Gets current card
+			Card tempCard = deck.get(i);
+			if(card.isSuitRevealed() && card.isValueRevealed()){
+				if(tempCard.getCardSuit() == card.getCardSuit() && tempCard.getCardValue() == card.getCardValue()){
+					tempCard.revealSuit();
+					tempCard.revealValue();
+					return i;
+				}
+			} else if (card.isSuitRevealed()){
+				if(tempCard.getCardSuit() == card.getCardSuit()){
+					tempCard.revealSuit();
+					return i;
+				}
+			} else if (card.isValueRevealed()){
+				if(tempCard.getCardValue() == card.getCardValue()){
+					tempCard.revealValue();
+					return i;
+				}
+			} else {
+				return i;
+			}
+			
+		}
+		
+		return -1;
+	}
+
+
 }
 

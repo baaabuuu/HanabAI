@@ -9,8 +9,8 @@ public class Main {
 
 	public static void main(String[] args)
 	{
-		runMultipleGames(20, 4);
-		//runOneGame(4);
+		//runMultipleGames(100, 4);
+		runOneGame(4);
 	}
 	
 	public static void runMultipleGames( int gameCount, int AIcount)
@@ -38,8 +38,6 @@ public class Main {
 		Log.debug(true);
 		Game game = new Game();
 		game.startGameGetScore(AIcount);
-
-		
 	}
 	
 	public static String stackToString(int[] stack)
