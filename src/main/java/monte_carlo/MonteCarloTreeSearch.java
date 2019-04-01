@@ -13,7 +13,6 @@ public class MonteCarloTreeSearch {
 	int level;
 	long end;
 	
-	
 	public String findNextMove(Board board, int playerNo, Game game, int noOfGames, int maxTimeMILLIS, int noOfPlayers) {
         // define an end time which will act as a terminating condition
 		if(maxTimeMILLIS == 0){
