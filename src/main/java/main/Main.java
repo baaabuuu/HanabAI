@@ -19,6 +19,7 @@ public class Main {
 		ArrayList<int[]> stacks = new ArrayList<int[]>();
 		for (int i = 0; i < gameCount; i++)
 		{
+			//System.out.println("Game Started ["+(i+1)+"/"+gameCount+"] ");
 			Game game = new Game();
 			scores.add(game.startGameGetScore(AIcount));
 			stacks.add(game.getStacks());

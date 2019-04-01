@@ -1,6 +1,7 @@
 package dtu.hanabi_ai_game;
 
 
+
 /**
  * A card class that each have a suit and a value.
  * @author s164166
@@ -148,6 +149,12 @@ public class Card
 		}
 		return sb.toString();
 	}
-	
+	public boolean equals(Object obj) {
+	    if (obj == null) return false;
+	    if (obj == this) return true;
+	    if (!(obj instanceof Card)) return false;
+	    Card o = (Card) obj;
+	    return (o.suit == this.suit)&&(o.cardValue == this.cardValue);
+	}
 
 }

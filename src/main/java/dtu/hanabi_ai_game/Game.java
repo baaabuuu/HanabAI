@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import dtu.AI.AI;
+import dtu.AI.BeleifStrategy;
 import dtu.AI.DFSStrategy;
 import log.Log;
 
@@ -28,7 +29,8 @@ public class Game
 		board.createNewBoard(playerCount);
 		for (int i = humanAmm; i < playerCount; i++)
 		{
-			AIList.add(new AI(new DFSStrategy(board, i, playerCount)));
+			//AIList.add(new AI(new GreedyBestCertainty(i, board)));
+			AIList.add(new AI(new BeleifStrategy(i, board)));
 		}
 		int turn = 0;
 		while(true)
@@ -75,7 +77,9 @@ public class Game
 		board.createNewBoard(playerCount);
 		for (int i = humanAmm; i < playerCount; i++)
 		{
-			AIList.add(new AI(new DFSStrategy(board, i, playerCount)));
+			//AIList.add(new AI(new DFSStrategy(board, i, playerCount)));
+		
+			AIList.add(new AI(new BeleifStrategy(i, board)));
 		}
 		int turn = 0;
 		while(true)
@@ -130,7 +134,8 @@ public class Game
 			Log.important("AI TURN - applying AI hooks for AI " + (turn - humanAmm+1));
 			while(true)
 			{
-				int MaxDepth = playerCount;
+				//int MaxDepth = playerCount;
+				int MaxDepth = 2;
 				String action = AIList.get(turn - humanAmm).play(MaxDepth);
 				
 				Log.log("action string is: " + action);

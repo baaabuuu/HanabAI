@@ -1,0 +1,4 @@
+target/*
+debugFile.txt
+*~
+*.swp

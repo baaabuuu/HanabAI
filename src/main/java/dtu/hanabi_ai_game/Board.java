@@ -16,6 +16,7 @@ public class Board
 	private ArrayList<Card> deck;
 	private ArrayList<Card> playedCardsPile;
 	private int[][] playedCardsMatrix = new int[5][5];
+	private int[][] discardMatrix = new int[5][5];
 	private ArrayList<ArrayList<Card>> playerHands;
 	private int[] fireworkStacks;
 	private int score;
@@ -30,7 +31,19 @@ public class Board
 	{
 		score++;
 	}
-	
+	public int[][] getTrueDiscardMatrix(){
+		return this.discardMatrix;
+	}
+	public ArrayList<Card> getDeck() {
+		return this.deck;
+	}
+	public void  setDeck(ArrayList<Card> deck) {
+		this.deck = deck;
+		
+	}
+	public void setPlayerHand(int player, ArrayList<Card> newHand) {
+		this.playerHands.set(player, newHand);
+	}
 	public int getScore()
 	{
 		return score;
@@ -223,6 +236,7 @@ public class Board
     public void discardCard(Card card)
     {
     	playedCardsMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
+    	discardMatrix[card.getCardSuit().getID()][card.getCardValue()-1]++;
     	playedCardsPile.add(card);
     }
     
