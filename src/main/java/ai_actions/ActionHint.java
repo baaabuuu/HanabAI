@@ -1,5 +1,10 @@
 package ai_actions;
 
+/**
+ * Hint, basic hint which informs people about what will be hinted.
+ * @author s164166
+ *
+ */
 public class ActionHint implements Action {
 	private int target;
 	private String type;

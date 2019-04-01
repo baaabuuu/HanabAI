@@ -1,5 +1,7 @@
 package dtu.hanabi_ai_game;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A card class that each have a suit and a value.
@@ -10,9 +12,32 @@ public class Card
 {
 	private SuitEnum suit;
 	private int cardValue;
+	private ArrayList<SuitEnum> possibleSuites = new ArrayList<SuitEnum>();
+	private ArrayList<Integer> possibleValues = new ArrayList<Integer>();
 	
 	private boolean suitRevealed = false;
 	private boolean valueRevealed = false;
+	private boolean playable = false;
+	
+	/**
+	 * Playable is used when eliminating possilbeSuites and Values to remove things
+	 * @author s160902
+	 * @return
+	 */
+	public boolean isPlayable()
+	{
+		return playable;
+	}
+	
+	/**
+	 * Marks a card as playable -  used by predictor
+	 * @author s160902
+	 */
+	public void setPlayable()
+	{
+		playable = true;
+	}
+	
 	/**
 	 * Copies a card
 	 * @author s164166
@@ -21,6 +46,16 @@ public class Card
 	public Card copyCard()
 	{
 		Card card = new Card(getCardSuit(), getCardValue());
+		card.possibleSuites = new ArrayList<SuitEnum>();
+		card.possibleValues = new ArrayList<Integer>();
+		for (SuitEnum possibleSuit : possibleSuites)
+		{
+			card.possibleSuites.add(possibleSuit);
+		}
+		for (Integer suitValue : possibleValues)
+		{
+			card.possibleValues.add(new Integer(suitValue));
+		}
 		card.suitRevealed = suitRevealed;
 		card.valueRevealed = valueRevealed;
 		return card;
@@ -55,7 +90,69 @@ public class Card
 	{
 		this.suit = suit;
 		cardValue = value;
+		possibleSuites.add(SuitEnum.WHITE);
+		possibleSuites.add(SuitEnum.BLUE);
+		possibleSuites.add(SuitEnum.GREEN);
+		possibleSuites.add(SuitEnum.RED);
+		possibleSuites.add(SuitEnum.WHITE);
+		possibleValues.add(1);
+		possibleValues.add(2);
+		possibleValues.add(3);
+		possibleValues.add(4);
+		possibleValues.add(5);
 	}
+	
+	/**
+	 * Its not this value
+	 * @author s160902
+	 * @param value
+	 */
+	public void isNot(int value)
+	{
+		possibleValues.remove(value);
+	}
+	/**
+	 * Its not this suit
+	 * @author s160902
+	 * @param value
+	 */
+	public void isNot(SuitEnum suit)
+	{
+		possibleSuites.remove(suit);
+	}
+	
+	/**
+	 * Check if the card is possible this value
+	 * @author s160902
+	 * @param value
+	 * @return
+	 */
+	public boolean isCard(int value)
+	{
+		return possibleValues.contains(value);
+	}
+	
+	/**
+	 * Check if a card is possible this suit
+	 * @author s160902
+	 * @param suit
+	 * @return
+	 */
+	public boolean isCard(SuitEnum suit)
+	{
+		return possibleSuites.contains(suit);
+	}
+	
+	/**
+	 * Get the possible values arrayList
+	 * @author s160902
+	 * @return
+	 */
+	public ArrayList<Integer> getPossibleValues()
+	{
+		return possibleValues;
+	}
+	
 	/**
 	 * Check if a suit is revealed
 	 * @author s164166
@@ -65,6 +162,7 @@ public class Card
 	{
 		return suitRevealed;
 	}
+	
 	/**
 	 * Check if a value is revealed.
 	 * @author s164166

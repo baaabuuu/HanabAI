@@ -10,7 +10,7 @@ public class Main {
 	public static void main(String[] args)
 	{
 		runMultipleGames(20, 4);
-		//runOneGame(4);
+		//runOneGame(3);
 	}
 	
 	public static void runMultipleGames( int gameCount, int AIcount)

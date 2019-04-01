@@ -26,11 +26,20 @@ public class Board
 	private int[] cardNumbers;
 	private SuitEnum[] suits;
 	
+	/**
+	 * Add points to the board
+	 * @author s164166
+	 */
 	public void addPoint()
 	{
 		score++;
 	}
 	
+	/**
+	 * Get the score of the board.
+	 * @author s164166
+	 * @return
+	 */
 	public int getScore()
 	{
 		return score;
@@ -281,6 +290,11 @@ public class Board
     	}
     }
 
+	/**
+	 * Genereate the deck
+	 * @author s164166
+	 * @return
+	 */
 	public ArrayList<Card> generateDeck() {
 		ArrayList<Card> deck = new ArrayList<Card>();
 		for (int a = 0; a < suits.length; a++)
@@ -296,6 +310,11 @@ public class Board
 		return deck;
 	}   
 	
+	/**
+	 * Get the player hands.
+	 * @author s164166
+	 * @return
+	 */
 	public ArrayList<ArrayList<Card>> getPlayerHands()
 	{
 		return playerHands;

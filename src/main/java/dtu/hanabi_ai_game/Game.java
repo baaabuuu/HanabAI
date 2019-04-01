@@ -6,7 +6,10 @@ import java.util.Scanner;
 import dtu.AI.AI;
 import dtu.AI.DFSStrategy;
 import log.Log;
-
+/**
+ * The game of Hanabi.
+ * @author s164166
+ */
 public class Game
 {
 	public Board board;
@@ -19,6 +22,12 @@ public class Game
 	Scanner scanner = new Scanner(System.in);
 	private ArrayList<AI> AIList = new ArrayList<AI>();
 	
+	/**
+	 * This method was used for generating a series of AIs playing together.
+	 * @author s164166
+	 * @param AIcount
+	 * @return
+	 */
 	public int startGameGetScore(int AIcount)
 	{
 		humanAmm = 0;
@@ -33,9 +42,13 @@ public class Game
 		int turn = 0;
 		while(true)
 		{
-			if (finished == 5 || board.getLife() == 0 || finalRound == turn)
+			if (finished == 5 || board.getLife() == 0 || finalRound == 0)
 			{
 				break;
+			}
+			if (finalRound > 0)
+			{
+				finalRound--;
 			}
 			takeTurn(turn);
 			turn = (turn+1 == playerCount) ? 0 : turn+1;
@@ -43,7 +56,10 @@ public class Game
 		return board.getScore();
 	}
 	
-	
+	/**
+	 * Start the game, used for actual games not AI only games.
+	 * @author s164166
+	 */
 	public void startGame()
 	{
 		Log.important("Generating new Game");
@@ -80,7 +96,7 @@ public class Game
 		int turn = 0;
 		while(true)
 		{
-			if (finished == 5 || board.getLife() == 0 || finalRound == turn)
+			if (finished == 5 || board.getLife() == 0 || finalRound == 0)
 			{
 				System.out.println("Game is now over... And the score is " + board.getScore());
 				break;
@@ -90,6 +106,11 @@ public class Game
 		}
 	}
 	
+	/**
+	 * Take a turn, pretty simple ngl.
+	 * @author s164166
+	 * @param turn
+	 */
 	private void takeTurn(int turn)
 	{
 		Log.important("turn is equal to: " +( turn+1));
@@ -97,7 +118,7 @@ public class Game
 
 		if (Log.debug)
 		{
-			getNextInput();
+			//getNextInput();
 			Log.log("Life count is: " + board.getLife());
 			Log.log("Token count is: " + board.getClueTokens());
 			Log.log("Deck Size is: " + board.getDeckSize());
@@ -130,7 +151,11 @@ public class Game
 			Log.important("AI TURN - applying AI hooks for AI " + (turn - humanAmm+1));
 			while(true)
 			{
-				int MaxDepth = playerCount;
+				int MaxDepth = 4;
+				if (finalRound != -1 && MaxDepth > finalRound)
+				{
+					MaxDepth = finalRound+1;
+				}
 				String action = AIList.get(turn - humanAmm).play(MaxDepth);
 				
 				Log.log("action string is: " + action);
@@ -142,6 +167,11 @@ public class Game
 		}
 	}
 	
+	/**
+	 * Get the next input
+	 * @author s164166
+	 * @return
+	 */
 	private String getNextInput()
 	{
 		String input = "";
@@ -151,6 +181,7 @@ public class Game
 	}
 	/**
 	 * Prints which actions are available.
+	 * @author s164166
 	 */
 	private void getActions()
 	{
@@ -160,6 +191,13 @@ public class Game
 		System.out.println("To play a card write P[1/2/3/4/5]");
 	}
 	
+	/**
+	 * Parse the action
+	 * @author s164166
+	 * @param action
+	 * @param turn
+	 * @return
+	 */
 	private boolean takeAction(String action, int turn)
 	{
 		
@@ -182,7 +220,7 @@ public class Game
 					board.drawCard(turn);
 					if (board.getDeckSize() == 0)
 					{
-						finalRound = turn;
+						finalRound = playerCount;
 					}
 				}
 				Log.log("Handling discard action for player " + (turn+1) + " they discarded " + card.getStringRepresentation());
@@ -291,7 +329,7 @@ public class Game
 					board.drawCard(turn);
 					if (board.getDeckSize() == 0)
 					{
-						finalRound = turn;
+						finalRound = playerCount;
 					}
 				}
 				return true;
@@ -303,6 +341,10 @@ public class Game
 	
 	}
 	
+	/**
+	 * Display the firework stacks and the letters.
+	 * @author s164166
+	 */
 	public void getStackPiles()
 	{
 		if (!Log.debug)
@@ -319,6 +361,7 @@ public class Game
 	/**
 	 * Does a quick countdown.
 	 * @param duration
+	 * @author s164166
 	 */
 	private void timer(int duration)
 	{
@@ -336,6 +379,11 @@ public class Game
 		}
 	}
 	
+	/**
+	 * Get the player hands.
+	 * @author s164166
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private ArrayList<Card>[] getPlayerHands()
 	{
@@ -347,6 +395,11 @@ public class Game
 		return hands;
 	}
 	
+	/**
+	 * Display the player hands - used for debugging
+	 * @author s164166
+	 * @param hands
+	 */
 	private void displayDebugPlayerhands(ArrayList<Card>[] hands)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -369,7 +422,12 @@ public class Game
 		Log.log(sb.toString());
 	}
 
-	
+	/**
+	 * Display playerhands -. not used for debugging.
+	 * @author s164166
+	 * @param hands
+	 * @param turn
+	 */
 	private void displayPlayerhands(ArrayList<Card>[] hands, int turn)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -404,6 +462,11 @@ public class Game
 		Log.log(sb.toString());
 	}
 	
+	/**
+	 * Get the fireword stack.
+	 * @author s164166
+	 * @return
+	 */
 	public int[] getStacks()
 	{
 		return board.getFireworkStacks();

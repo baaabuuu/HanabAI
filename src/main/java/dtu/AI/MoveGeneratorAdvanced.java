@@ -15,12 +15,13 @@ import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
 
 /**
- * A simple version of the move generator and the first iteration
+ * A likely improvement based on MoveGenerator
  * @author s164166
  *
  */
-public class MoveGeneratorSimple implements MoveGenerator {
+public class MoveGeneratorAdvanced implements MoveGenerator {
 
+	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
 			
 	@Override
 	/**
@@ -37,7 +38,6 @@ public class MoveGeneratorSimple implements MoveGenerator {
 
 		Board board = wrapper.getBoard();
 		int playerCount = board.getPlayerHands().size();
-	
 
 		ArrayList<ArrayList<Card>> playerHands = board.getPlayerHands();
 		int scorePool[] = board.getFireworkStacks();
@@ -81,7 +81,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		for (Action action : possibleActions)
 		{
 			Board newBoardState = board.copyState();
-			applyAction(action, newBoardState, currPlayer);
+			applyAction(action, newBoardState, currPlayer, origPlayer);
 			MoveWrapper newWrapper = new MoveWrapper(action, newBoardState);
 			wrapper.addMove(newWrapper);
 		}
@@ -94,14 +94,14 @@ public class MoveGeneratorSimple implements MoveGenerator {
 	 * @param board
 	 * @param turn
 	 */
-	private void applyAction(Action action, Board board, int turn) 
+	private void applyAction(Action action, Board board, int turn, int origTurn) 
 	{
 		String output = action.play();
 		if (output.charAt(0) == 'P')
 		{
 			int cardIndex = Character.getNumericValue(output.charAt(1));
 			Card card = board.getPlayerHand(turn).get(cardIndex);
-			if (card.isSuitRevealed() != true)
+			if (card.isSuitRevealed() != true || card.isValueRevealed() != true)
 			{
 				board.playCard(card, 5);
 			}
@@ -115,7 +115,10 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		{
 			int cardIndex = Character.getNumericValue(output.charAt(1));
 			Card card = board.getPlayerHand(turn).get(cardIndex);
-			board.discardCard(card);
+			if (turn != origTurn)
+			{
+				board.discardCard(card);
+			}
 			board.addClueToken();
 		}
 		else
@@ -165,7 +168,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 			{
 				for (int i = 0; i < 5; i++)
 				{
-					if (scorePool[i] + 1 != card.getCardValue())
+					if (card.isCard(suits[i]) && scorePool[i] + 1 != card.getCardValue())
 					{
 						return false;
 					}
@@ -177,12 +180,23 @@ public class MoveGeneratorSimple implements MoveGenerator {
 			{
 				return true;
 			}
+
 		}
-		
+		if (card.isPlayable())
+		{
+			return true;
+		}
 		return false;
 	}
 
 
+	/**
+	 * Generate teh possible plays and add them to the hand.
+	 * @author s164166
+	 * @param hand
+	 * @param scorePool
+	 * @return
+	 */
 	private Collection<? extends Action> generatePossiblePlays(ArrayList<Card> hand, int[] scorePool) 
 	{
 		HashSet<Action> playset = new HashSet<Action>();
@@ -198,8 +212,8 @@ public class MoveGeneratorSimple implements MoveGenerator {
 	}
 
 	/**
-	 * Finds best discard
-	 * @author s164166
+	 * Same as in Movegenerator - but with bugfixes
+	 * @author s160902
 	 * @param hand
 	 * @param scorePool
 	 * @param board
@@ -234,7 +248,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 	}
 
 	/**
-	 * Generate the hints that can be given.
+	 * Generate the hints given
 	 * @author s164166
 	 * @param hand
 	 * @param playerID
@@ -265,9 +279,9 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		}
 		return collection;
 	}
-
+	
 	/**
-	 * If no information about a suit discard
+	 * Check if a card in hand hasnt had its suit revealed, if so its a discard target
 	 * @author s164166
 	 * @param hand
 	 * @return
@@ -286,7 +300,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 	}
 	
 	/**
-	 * If no information about the value discard
+	 * Check if a cards value is revealed, if not its the discard target.
 	 * @author s164166
 	 * @param hand
 	 * @return
@@ -305,7 +319,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 	}
 	
 	/**
-	 * If no information at all about a card, discard it.
+	 * If no information exists about a card, discard it.
 	 * @author s164166
 	 * @param hand
 	 * @return
@@ -320,9 +334,8 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		return -1;
 	}
 
-	
 	/**
-	 * If there is a duplicate remove it
+	 * If a card is a duplicate, remove it.
 	 * @author s164166
 	 * @param hand
 	 * @return
@@ -331,7 +344,7 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		for (int j = 0; j < hand.size(); j++)
 		{
 			Card cardConsider = hand.get(j);
-			for (int k = j + 1; k < hand.size() - 1; k++)
+			for (int k = j+1; k < hand.size() - 1; k++)
 			{
 				Card otherCard = hand.get(k);
 				if (cardConsider.isSuitRevealed() && cardConsider.isValueRevealed() &&
@@ -346,28 +359,29 @@ public class MoveGeneratorSimple implements MoveGenerator {
 		return -1;
 	}
 
-	/**
-	 * If any card is unplayable discard it.
-	 * @author s164166
-	 * @param hand
-	 * @param scorePool
-	 * @param board
-	 * @return
-	 */
 	public int checkIfHandContainsUnplayableCard(ArrayList<Card> hand, int[] scorePool, Board board)
 	{
 		for (int i = 0; i < hand.size(); i++)
 		{
-			Card cardConsider = hand.get(i);
+			Card card = hand.get(i);
 			//Check if value is possible to play
-			for (int k = 0; k < 5; k++)
+			if (!card.isSuitRevealed() && card.isValueRevealed())
 			{
-				if (!cardConsider.isSuitRevealed() && cardConsider.isValueRevealed() && cardConsider.getCardValue() < scorePool[k])
+				boolean check = true;
+				for (int k = 0; k < 5; k++)
+				{					
+					if (card.getCardValue() > scorePool[k])
+					{
+						check = false;
+					}
+				}
+				if (check)
 				{
 					return i;
 				}
 			}
-			if (cardConsider.isSuitRevealed() && !checkIfSuitIsPlayable(cardConsider.getCardSuit(), scorePool, board))
+			
+			if (card.isSuitRevealed() && !checkIfSuitIsPlayable(card.getCardSuit(), scorePool, board))
 			{
 				return i;
 			}

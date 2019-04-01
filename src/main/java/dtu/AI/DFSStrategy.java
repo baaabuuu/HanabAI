@@ -1,28 +1,23 @@
 package dtu.AI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.function.Predicate;
 
 import ai_actions.Action;
-import ai_actions.ActionDiscard;
-import ai_actions.ActionHint;
-import ai_actions.ActionPlay;
 import ai_actions.MoveWrapper;
 import dtu.hanabi_ai_game.Board;
-import dtu.hanabi_ai_game.Card;
-import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
+/**
+ * Generic DFS strategy with a maximum depth of 5
+ * @author s164166
+ *
+ */
 public class DFSStrategy implements Strategy
 {
 	private Board gameState;
 	private int id;
 	private int playerCount;
-	private Predictor predictor = new PredictorSimple();
-	private MoveGenerator generator = new MoveGeneratorSimple();
+	private Predictor predictor = new PredictorAdvanced();
+	private MoveGenerator generator = new MoveGeneratorAdvanced();
 	private BoardScorer scorer = new BoardScorerSimple();
 
 	public DFSStrategy(Board gameState, int id, int playerCount)
@@ -34,7 +29,7 @@ public class DFSStrategy implements Strategy
 	
 	public String search(int depth)
 	{
-		Log.important("Starting a search for DFS AI " + id);
+		Log.important("Starting a search for DFS AI " + (id+1));
 		MoveWrapper wrapper = new MoveWrapper(null, gameState.copyState());
 		return getBestMove(wrapper, 0, depth, id).play();
 	}

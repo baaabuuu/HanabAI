@@ -6,13 +6,19 @@ import dtu.hanabi_ai_game.Board;
 import dtu.hanabi_ai_game.Card;
 import dtu.hanabi_ai_game.SuitEnum;
 import log.Log;
+/**
+ * An advancement on the first predictor.
+ * @author s164166
+ *
+ */
+public class PredictorAdvanced implements Predictor {
 
-public class PredictorSimple implements Predictor {
+	private SuitEnum[] suits = {SuitEnum.WHITE, SuitEnum.RED, SuitEnum.BLUE, SuitEnum.YELLOW, SuitEnum.GREEN};
 
 	
 	/**
 	 * Finds out which cards havent been played/ no information is given about.
-	 * @author s164166
+	 * @author s160902
 	 * @param playerhands
 	 * @param playerTurn - the one whose turn is.
 	 * @param origPlayer - the one that initiated the chain
@@ -49,7 +55,12 @@ public class PredictorSimple implements Predictor {
 		return potentialCards;
 	}
 	
+
 	@Override
+	/**
+	 * Generates the prediction, essentially an entrance function for the prediction.
+	 * @author s160902
+	 */
 	public ArrayList<Card> predict(ArrayList<ArrayList<Card>> hands, int turn, int origTurn, Board board) {
 		ArrayList<Card> attempt = new ArrayList<Card>();
 		for (Card card : hands.get(turn))
@@ -57,7 +68,7 @@ public class PredictorSimple implements Predictor {
 				attempt.add(card.copyCard());
 		}
 		ArrayList<Card> potentialCards = generatePotentialCards(hands, turn, origTurn, board);
-		while (true) 
+		while (true)
 		{
 			boolean guess = false;
 			for (int i = 0; i < attempt.size(); i++) {
@@ -70,7 +81,7 @@ public class PredictorSimple implements Predictor {
 			}
 			//if we have less than or equal to 10, we can make a guess about the suits left.
 			if (suitsLeftInHand(attempt) && potentialCards.size() <= 10) {
-				guess = predictSuite(potentialCards, attempt);
+				guess = predictSuit(potentialCards, attempt);
 				if (guess)
 				{
 					break;
@@ -90,12 +101,58 @@ public class PredictorSimple implements Predictor {
 			}
 		}
 		
+		int[] suitCopies = {0,0,0,0,0};
+		int[] numberCopies = {0,0,0,0,0};
+		boolean isEverythingPlayable = true;
+		int count = 0;
+		for (Card card : potentialCards)
+		{
+			suitCopies[card.getCardSuit().getID()]++;
+			numberCopies[card.getCardValue()-1]++;
+			if (isEverythingPlayable && card.getCardValue() != board.getFireworkStacks()[card.getCardSuit().getID()] + 1)
+			{
+				if (board.getLife() > count)
+				{
+					isEverythingPlayable = false;
+				}
+				count++;
+			}
+		}
+		
+		
+		for (Card card : attempt)
+		{
+			if (isEverythingPlayable)
+			{
+				card.setPlayable();
+			}
+			if (!card.isValueRevealed())
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					if (numberCopies[i] == 0)
+					{
+						card.isNot(i);
+					}
+				}
+			}
+			if (!card.isSuitRevealed())
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					if (suitCopies[i] == 0)
+					{
+						card.isNot(suits[i]);
+					}
+				}
+			}
+		}
 		return attempt;
 	}
 
 	/**
-	 * Predict the value of a card.
-	 * @author s160902
+	 * Possibly make a prediction about the values of each card.
+	 * @author s164166
 	 * @param potentialCards
 	 * @param attempt
 	 * @return
@@ -123,13 +180,13 @@ public class PredictorSimple implements Predictor {
 	}
 
 	/**
-	 * Predict the suit
+	 * Predict the suit of a card
 	 * @author s164166
 	 * @param potentialCards
 	 * @param attempt
 	 * @return
 	 */
-	private boolean predictSuite(ArrayList<Card> potentialCards, ArrayList<Card> attempt) {
+	private boolean predictSuit(ArrayList<Card> potentialCards, ArrayList<Card> attempt) {
 		int guessSuit = -1;
 		for (Card cardGuess : potentialCards) {
 			if (guessSuit == -1) {
